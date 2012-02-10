@@ -22,7 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Requirements
 ------------
-
 python 2.7.1+
 
-
+Run
+---
+./example.py
