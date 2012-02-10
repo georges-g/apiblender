@@ -1,3 +1,8 @@
+Description
+-------
+
+API Blender allows you to easily interact with multiple Web services.
+
 License
 -------
 
