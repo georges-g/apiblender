@@ -4,7 +4,7 @@ Description
 API Blender allows you to easily interact with multiple Web services.
 
 API Blender has been developed as part of the
-ARCOMEM project (http://arcomem.eu)
+ARCOMEM project (http://arcomem.eu).
 
 Requirements
 ------------
@@ -13,7 +13,7 @@ python 2.7.1+
 Run
 ---
 
-.License
+License
 -------
 
 Copyright (C) 2011  Georges GOURITEN 
