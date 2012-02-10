@@ -3,11 +3,18 @@ Description
 
 API Blender allows you to easily interact with multiple Web services.
 
-License
--------
-
-API Blender developed as part of the
+API Blender has been developed as part of the
 ARCOMEM project (http://arcomem.eu)
+
+Requirements
+------------
+python 2.7.1+
+
+Run
+---
+
+.License
+-------
 
 Copyright (C) 2011  Georges GOURITEN 
 
@@ -24,11 +31,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-Requirements
-------------
-python 2.7.1+
-
-Run
----
-./example.py
+/example.py
