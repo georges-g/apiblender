@@ -6,10 +6,10 @@ API Blender allows you to easily interact with multiple Web services.
 License
 -------
 
-DBWeb REST API Crawler: a flexible REST API crawler developed for the
+API Blender developed as part of the
 ARCOMEM project (http://arcomem.eu)
 
-Copyright (C) 2011  Georges GOURITEN (georges.gouriten-at-gmail-dot-com)
+Copyright (C) 2011  Georges GOURITEN 
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
