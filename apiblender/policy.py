@@ -10,8 +10,10 @@ class PolicyManager:
 
 	def add_server(self, server):
 		if server.name not in self.servers_status:
-			self.servers_status.update({ server.name: \
-				{ "request_count": 0, "sleeping_state": False, "sleeping_since": None } })
+			self.servers_status.update({ server.name: {
+																			"request_count": 0, 
+																			"sleeping_state": False,
+																			"sleeping_since": None } })
 		
 
 	def signal_server_request(self, server):
@@ -27,7 +29,8 @@ class PolicyManager:
 		if self.servers_status[server.name]["sleeping_state"]:
 			return False
 
-		elif self.servers_status[server.name]["request_count"] > server.policy.requests_per_hour:
+		elif (self.servers_status[server.name]["request_count"]
+					> server.policy.requests_per_hour):
 			self.servers_status[server.name]["sleeping_state"] = True
 			self.counters[host]["sleeping_since"] = datetime.now()
 			return False

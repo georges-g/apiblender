@@ -1,4 +1,8 @@
+import httplib
+import urllib
+
 class Server:
+
 	def __init__(self, server_config):
 
 		#
@@ -9,25 +13,59 @@ class Server:
 		self.host = server_config["host"]
 		self.port = server_config["port"]
 
-		self.authentication = Authentification(server_config["authentication"])
-		self.policy = Policy(server_config["policy"])
+		if server_config["authentication"]:
+			if server_config["authentication"]["type"] == "simple":
+				self.authentication = AuthSimple(server_config["authentication"])
+		else:
+			self.authentication = None
+
+		if server_config["policy"]:
+			self.policy = Policy(server_config["policy"])
+		else:
+			self.policy = None
 
 		self.interactions = [] 
 		for interaction in server_config["interactions"]:
 			new_interaction = Interaction(interaction)
 			self.interactions.append(new_interaction)
-	
 
-class Authentification:
+
+class Authentication:
+
+	def __init__(self, authentication_config):
+		self.type_ = authentication_config["type"]
+
+
+class AuthSimple(Authentication):
+
 	def __init__(self, authentication_config):
 
 		#
 		# TODO: validation
 		#
 
-		# TODO: implement authentication
-		if authentication_config:
-			pass
+		self.path = authentication_config["path"]
+		self.parameters = authentication_config["parameters"]
+
+	def request_parameters(self, host):
+
+		c = httplib.HTTPSConnection(host)
+		total_path = "%s?%s" % (self.path,urllib.urlencode(self.parameters))
+		c.request('GET', total_path)
+		r = c.getresponse()
+		http_response = r.read()
+		c.close()
+
+		try:
+			return dict(http_response.split('='))
+		except Exception:
+			return None
+
+class AuthOauth2(Authentication):
+
+	def __init__(self, authentication_config):
+		pass
+
 
 
 class Policy:
@@ -39,8 +77,10 @@ class Policy:
 
 		if policy_config:
 			self.requests_per_hour = policy_config["requests_per_hour"]
-			self.too_many_calls_response_code = policy_config["too_many_calls_response_code"]
-			self.too_many_calls_waiting_time = policy_config["too_many_calls_waiting_seconds"]
+			self.too_many_calls_response_code = \
+					policy_config["too_many_calls_response_code"]
+			self.too_many_calls_waiting_time = \
+					policy_config["too_many_calls_waiting_seconds"]
 
 
 class Interaction:
@@ -57,6 +97,7 @@ class Interaction:
 
 
 class Request:
+	
 	def __init__(self, request_config):
 
 		#
@@ -70,12 +111,14 @@ class Request:
 			self.raw_content = request_config["raw_content"]
 
 		if "path_constant_parameters" in request_config.keys():
-			self.path_constant_parameters = request_config["path_constant_parameters"]
+			self.path_constant_parameters = \
+					request_config["path_constant_parameters"]
 
 		self.path_variable_parameters = request_config["path_variable_parameters"]
 
 
 class Response:
+
 	def __init__(self, response_config):
 
 		#
@@ -86,7 +129,7 @@ class Response:
 			self.expected_status_code = response_config["expected_status_code"]
 		else:
 			self.expected_status_code = 200
-		
+
 		if response_config["serialization_format"] in ["JSON", "XML"]:
 			self.serialization_format = response_config["serialization_format"]
 		else:
