@@ -11,9 +11,9 @@ class PolicyManager:
 	def add_server(self, server):
 		if server.name not in self.servers_status:
 			self.servers_status.update({ server.name: {
-																			"request_count": 0, 
-																			"sleeping_state": False,
-																			"sleeping_since": None } })
+											"request_count": 0, 
+											"sleeping_state": False,
+											"sleeping_since": None } })
 		
 
 	def signal_server_request(self, server):
@@ -43,7 +43,8 @@ class PolicyManager:
 		if not self.servers_status[server.name]["sleeping_state"]:
 			return 0
 		else:
-			date_diff = (datetime.now() - self.servers_status[server.name]["sleeping_state"])
+			date_diff = (datetime.now() -
+						self.servers_status[server.name]["sleeping_state"])
 			return (3600 - date_diff.total_seconds())
 	
 
