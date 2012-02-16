@@ -1,7 +1,7 @@
 {
 	"name": "facebook",
 	"host": "graph.facebook.com",
-	"port": 80,
+	"port": 443,
 	"authentication": {
 		"type": "simple",
 		"path": "/oauth/access_token",

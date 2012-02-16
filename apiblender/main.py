@@ -4,7 +4,7 @@ import json
 import urllib
 import httplib
 
-import server
+import serverclasses
 import policy
 import authentication
 
@@ -40,7 +40,6 @@ class Blender:
 
 
     def load_server(self, server_name):
-        """Create a server instance."""
     
         server_config_path = self.apis_path + server_name + '.json'
 
@@ -50,28 +49,36 @@ class Blender:
             with open(server_config_path, 'r') as server_config_file:
                 server_config = json.load(server_config_file)
 
-            self.server = server.Server(server_config)
+            self.server = serverclasses.Server(server_config)
 
             if self.server.policy:
                 self.policy_manager.add_server(self.server)
             
             if self.server.authentication:
-                self.authentication_manager.add_server(self.server)
+                if not self.authentication_manager.add_server(self.server):
+                    self.server = None
 
 
     def load_interaction(self, interaction_name):
 
         if not self.server:
-            print('ERROR: You must load a server first.' % interaction_name)
+            print('ERROR loading %s: no server loaded.' % interaction_name)
+            return None
 
-        elif interaction_name in [interaction.name for interaction in
+        if interaction_name in [interaction.name for interaction in
                     self.server.interactions]:
                 self.interaction = interaction
         else:
-            print('ERROR: Interaction %s was not found.' % interaction_name)
+            print('ERROR loading %s: not found on server %s.'\
+                    % (interaction_name, self.server.name))
+            return None
 
 
     def blend(self, request_parameters):
+
+        if not self.interaction:
+            print('ERROR blending: no interaction loaded.')
+            return None
 
         if not self.policy_manager.get_request_permission(self.server):
             sleeping_time = self.policy_manager.get_sleeping_time()
@@ -81,14 +88,21 @@ class Blender:
         #TODO: request_parameters verification
     
         total_parameters = {}
-        total_parameters.update(self.interaction.request.path_constant_parameters)
+        total_parameters.update(
+                            self.interaction.request.path_constant_parameters)
         total_parameters.update(request_parameters)
+
+        if self.authentication_manager.exists_server(self.server):
+            total_parameters.update(
+                             authentication_manager.servers["server.name"])
+            c = httplib.HTTPSConnection(self.server.host, self.server.port,
+                                        timeout = 10)
+        else:
+            c = httplib.HTTPConnection(self.server.host, self.server.port,
+                                        timeout = 10)
 
         total_path = "%s?%s" % (self.interaction.request.root_path, 
                                 urllib.urlencode(total_parameters))
-
-        #TODO: HTTP or HTTPS? 
-        c = httplib.HTTPConnection(self.server.host, self.server.port)
 
         print "> Request: %s%s" % (self.server.host, total_path) 
         c.request(self.interaction.request.method, total_path)
@@ -96,6 +110,6 @@ class Blender:
         http_response = r.read()
         c.close()
         
-        print http_response 
+        print http_response[0:100] 
 
 
