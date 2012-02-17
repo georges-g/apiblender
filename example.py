@@ -14,7 +14,7 @@ def get_all_twitter_pages(target_blender):
 def just_one_facebook_page(target_blender):
     target_blender.load_server("facebook")
     target_blender.load_interaction("search")
-    blender.blend({"q": "good spirit"})
+    target_blender.blend({"q": "good spirit"})
 
 
 just_one_facebook_page(blender)
