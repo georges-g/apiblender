@@ -15,9 +15,9 @@ class Server:
 
         if server_config["authentication"]:
             if server_config["authentication"]["type"] == "simple":
-                self.authentication = AuthSimple(server_config["authentication"])
+                self.auth = AuthSimple(server_config["authentication"])
         else:
-            self.authentication = None
+            self.auth = None
 
         if server_config["policy"]:
             self.policy = Policy(server_config["policy"])
@@ -32,20 +32,20 @@ class Server:
 
 class Authentication:
 
-    def __init__(self, authentication_config):
-        self.type_ = authentication_config["type"]
+    def __init__(self, auth_config):
+        self.type_ = auth_config["type"]
 
 
 class AuthSimple(Authentication):
 
-    def __init__(self, authentication_config):
+    def __init__(self, auth_config):
 
         #
         # TODO: validation
         #
 
-        self.path = authentication_config["path"]
-        self.parameters = authentication_config["parameters"]
+        self.path = auth_config["path"]
+        self.parameters = auth_config["parameters"]
 
     def request_parameters(self, host, port):
 
@@ -65,7 +65,7 @@ class AuthSimple(Authentication):
 
 class AuthOauth2(Authentication):
 
-    def __init__(self, authentication_config):
+    def __init__(self, auth_config):
         pass
 
 
@@ -122,16 +122,13 @@ class Request:
 class Response:
 
     def __init__(self, response_config):
-
         #
         # TODO: validation
         #
-
         if "expected_status_code" in response_config.keys():
             self.expected_status_code = response_config["expected_status_code"]
         else:
             self.expected_status_code = 200
-
         if response_config["serialization_format"] in ["JSON", "XML"]:
             self.serialization_format = response_config["serialization_format"]
         else:
@@ -139,3 +136,27 @@ class Response:
             # TODO: manage exception
             #
             raise Exception
+        if "integration" in response_config.keys():
+            self.extractor = Extractor(response_config["integration"])
+        else:
+            self.extractor = None
+
+
+class Extractor:
+
+    def __init__(self, extractor):
+        self.extractor = extractor
+
+    def extract(response):
+       return response 
+        #TODO
+#        for k, v in self.extractor.iteritems():
+#            if v:
+#                try:
+#                    value = utils.getFromDict(result,v)
+#                    standardContent.update({k: value})
+#                except Exception as e:
+#                    continue
+
+
+
