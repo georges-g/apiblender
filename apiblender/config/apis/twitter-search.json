@@ -1,28 +1,31 @@
 {
-	"name": "twitter-search",
-	"host": "search.twitter.com",
-	"port": 80,
-	"authentication": null,
-	"policy": {
-		"active": true,
-		"requests_per_hour": 200,
-		"too_many_calls_response_code": 420,
-		"too_many_calls_waiting_seconds": 420 
-	},
-	"interactions": [
-		{
-			"name": "search",
-			"description": "search for tweets, users, hashtags with keywords",
-			"request": {
-				"root_path": "/search.json",
-				"method": "GET",
-				"path_constant_parameters": { "rpp": 100, "include_entities": "true" },
-				"path_variable_parameters": { "key": "q", "type": "string" }
-			},
-			"response": {
-				"expected_status_code": 200,
-				"serialization_format": "JSON"
-			}
-		}
-	]
+    "name": "twitter-search",
+    "host": "search.twitter.com",
+    "port": 80,
+    "authentication": null,
+    "policy": {
+        "active": true,
+        "requests_per_hour": 3,
+        "too_many_calls_response_code": 420,
+        "too_many_calls_waiting_seconds": 1
+    },
+    "interactions": [
+        {
+            "name": "search",
+            "description": "search for tweets, users, hashtags with keywords",
+            "request": {
+                "root_path": "/search.json",
+                "method": "GET",
+                "parameters": [ 
+                    [ "q", "string", false, null ],
+                    [ "rpp", "int", true, 100 ], 
+                    [ "include_entities", "boolean", true, true ] 
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        }
+    ]
 }

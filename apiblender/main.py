@@ -3,6 +3,7 @@ import sys
 import json
 import urllib
 import httplib
+import time
 
 import serverclasses
 import policy
@@ -59,26 +60,38 @@ class Blender:
                     % (interaction_name, self.server.name))
             return None
 
-    def blend(self, request_parameters):
+    def list_parameters(self):
+        """List available servers."""
+        for parameter in self.interaction.request.parameters:
+            print parameter 
+
+    def set_parameters(self, parameters_to_set):
+        if not self.interaction:
+            print('ERROR setting parameters: no interaction loaded.')
+            return None
+        for k, v in parameters_to_set.iteritems():
+            self.interaction.request.set_parameter([k,v])
+
+    def blend(self):
         if not self.interaction:
             print('ERROR blending: no interaction loaded.')
             return None
+        status = None
         if not self.policy_manager.get_request_permission(self.server):
-            sleeping_time = self.policy_manager.get_sleeping_time()
-            print "sleeping for: %s seconds" % (sleeping_time)
+            sleeping_time = self.policy_manager.get_sleeping_time(self.server)
+            print "WARNING: Sleeping for: %s seconds" % (sleeping_time)
             time.sleep(sleeping_time)
-        response = self.make_request(request_parameters)
-        ready_response = self.prepare_response(response)
-        print str(ready_response)[0:100]
-        return ready_response
+            self.policy_manager.reset_server_sleep(self.server)
+        content, status = self.make_request()
+        ready_content = self.prepare_content(content)
+        self.check_response(status)
+        print str(ready_content)[0:100]
+        return ready_content 
 
-    def make_request(self, request_parameters):
-        #TODO: request_parameters verification
+    def make_request(self):
         total_parameters = {}
-        total_parameters.update(
-                self.interaction.request.path_constant_parameters)
-        total_parameters.update(request_parameters)
-
+        for parameter in self.interaction.request.parameters:
+            total_parameters.update({parameter.key: parameter.value})
         if self.auth_manager.exists_server(self.server):
             total_parameters.update(
                     auth_manager.servers["server.name"])
@@ -87,28 +100,43 @@ class Blender:
         else:
             c = httplib.HTTPConnection(self.server.host, self.server.port,
                                        timeout = 10)
-
         total_path = "%s?%s" % (self.interaction.request.root_path, 
                                 urllib.urlencode(total_parameters))
-
         print "> Request: %s%s" % (self.server.host, total_path) 
         c.request(self.interaction.request.method, total_path)
-        r = c.getresponse()
-        response = r.read()
+        response = c.getresponse()
+        content = response.read()
+        status = response.status
         c.close()
-        return response
-
-    def prepare_response(self, response):
-        try:
-            #TODO json or xml
-            response = json.loads(response)
-        except Exception:
-            #TODO manage exception
-            print 'wrong results'
-            return False
-        if self.interaction.response.extractor:
-            ready_response = \
-                self.interaction.response.extractor.extract(response)
+        self.policy_manager.signal_server_request(self.server)
+        # TODO: return whole object, clone?
+        return content, status 
+    
+    def check_response(self, status):
+# TODO: check response.read
+        if not status:
+            return 
+        elif status == self.interaction.response.expected_status_code:
+            return 
+        elif status == self.server.policy.too_many_calls_response_code:
+            self.policy_manager.signal_too_many_calls(self.server)
+            return 
         else:
-            ready_response = response
-        return ready_response
+            self.policy_manager.signal_wrong_response_code(self.server, 
+                    status)
+            return 
+
+    def prepare_content(self, content):
+        #try:
+        #TODO JSON or XML
+        content = json.loads(content)
+        #except Exception:
+            #TODO manage exception
+        #print 'wrong results'
+        #    return False
+        if self.interaction.response.extractor:
+            ready_content = \
+                self.interaction.response.extractor.extract(content)
+        else:
+            ready_content = content 
+        return ready_content

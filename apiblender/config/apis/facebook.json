@@ -23,8 +23,10 @@
 			"request": {
 				"root_path": "/path",
 				"method": "GET",
-				"path_constant_parameters": { "limit": 100 },
-				"path_variable_parameters": { "key": "q", "type": "string" }
+				"parameters": [
+                    [ "q", "string", false, null ],
+                    [ "limit", "integer", true, 100 ]
+                ]
 			},
 			"response": {
 				"expected_status_code": 200,
