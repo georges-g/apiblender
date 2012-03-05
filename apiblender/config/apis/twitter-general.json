@@ -1,0 +1,31 @@
+{
+    "name": "twitter-general",
+    "host": "api.twitter.com",
+    "port": 80,
+    "authentication": null,
+    "policy": {
+        "active": true,
+        "requests_per_hour": 150,
+        "too_many_calls_response_code": 420,
+        "too_many_calls_waiting_seconds": 600 
+    },
+    "interactions": [
+        {
+            "name": "followers",
+            "description": "",
+            "request": {
+                "root_path": "/1/followers/ids.json",
+                "method": "GET",
+                "parameters": [
+                    [ "user_id", "string", true, null ],
+                    [ "screen_name", "string", true, null ],
+                    [ "cursor", "string", true, -1 ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        }
+    ]
+}
