@@ -94,8 +94,10 @@ class Blender:
         success = self.check_response(status)
         data = self.prepare_content(content)
         ready_content = {   "success": success,
-                            "data": data}
-        print ">>Success:%s Data: %s" % (success, str(data)[0:140])
+                            "data": data,
+                            "status_code": status}
+        print ">>Success:%s  Status code: %s Data: %s" \
+                % (success, status, str(data)[0:140])
         return ready_content 
 
     def make_request(self):
