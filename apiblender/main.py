@@ -91,9 +91,11 @@ class Blender:
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
         content, status = self.make_request()
-        ready_content = self.prepare_content(content)
-        self.check_response(status)
-        print str(ready_content)[0:100]
+        success = self.check_response(status)
+        data = self.prepare_content(content)
+        ready_content = {   "success": success,
+                            "data": data}
+        print ">>Success:%s Data: %s" % (success, str(data)[0:140])
         return ready_content 
 
     def make_request(self):
@@ -122,16 +124,16 @@ class Blender:
     def check_response(self, status):
 # TODO: check response.read
         if not status:
-            return 
+            return False
         elif status == self.interaction.response.expected_status_code:
-            return 
+            return True
         elif status == self.server.policy.too_many_calls_response_code:
             self.policy_manager.signal_too_many_calls(self.server)
-            return 
+            return False
         else:
             self.policy_manager.signal_wrong_response_code(self.server, 
                     status)
-            return 
+            return False
 
     def prepare_content(self, content):
         #try:
