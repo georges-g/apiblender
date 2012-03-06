@@ -38,6 +38,7 @@ class Blender:
         server_config_path = self.apis_path + server_name + '.json'
         if not os.path.exists(server_config_path):
             print('ERROR: File %s was not found.' % server_config_path)
+            self.server = None
         else:
             with open(server_config_path, 'r') as server_config_file:
                 server_config = json.load(server_config_file)
@@ -48,16 +49,23 @@ class Blender:
                 if not self.auth_manager.add_server(self.server):
                     self.server = None
 
+    def list_interactions(self):
+        for interaction in self.server.interactions:
+            print interaction.name
+
     def load_interaction(self, interaction_name):
         if not self.server:
             print('ERROR loading %s: no server loaded.' % interaction_name)
+            self.interaction = None
             return None
-        if interaction_name in [interaction.name for interaction in
-                    self.server.interactions]:
-                self.interaction = interaction
+        for avb_interaction in self.server.interactions:
+            if interaction_name == avb_interaction.name:
+                self.interaction = avb_interaction
+                return
         else:
             print('ERROR loading %s: not found on server %s.'\
                     % (interaction_name, self.server.name))
+            self.interaction = None
             return None
 
     def list_parameters(self):
@@ -89,9 +97,8 @@ class Blender:
         return ready_content 
 
     def make_request(self):
-        total_parameters = {}
-        for parameter in self.interaction.request.parameters:
-            total_parameters.update({parameter.key: parameter.value})
+        total_parameters = self.interaction.request.get_total_parameters()
+        # TODO: authmanager method
         if self.auth_manager.exists_server(self.server):
             total_parameters.update(
                     auth_manager.servers["server.name"])

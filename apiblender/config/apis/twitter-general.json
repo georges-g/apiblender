@@ -11,6 +11,24 @@
     },
     "interactions": [
         {
+            "name": "friends",
+            "description": "Returns an array of numeric IDs for every user the specified user is following.",
+            "request": {
+                "root_path": "/1/friends/ids.json",
+                "method": "GET",
+                "parameters": [
+                    [ "user_id", "string", true, null ],
+                    [ "screen_name", "string", true, null ],
+                    [ "cursor", "string", true, -1 ],
+                    [ "stringify_ids", "boolean", true, false ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        },
+        {
             "name": "followers",
             "description": "",
             "request": {
@@ -19,7 +37,8 @@
                 "parameters": [
                     [ "user_id", "string", true, null ],
                     [ "screen_name", "string", true, null ],
-                    [ "cursor", "string", true, -1 ]
+                    [ "cursor", "string", true, -1 ],
+                    [ "stringify_ids", "boolean", true, false ]
                 ]
             },
             "response": {

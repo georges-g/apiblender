@@ -127,6 +127,12 @@ class Request:
         new_parameter = Parameter(parameter_config)
         self.parameters.append(new_parameter)
 
+    def get_total_parameters(self):
+        total_parameters = {}
+        for parameter in self.parameters:
+            if parameter.value != None:
+                total_parameters.update({parameter.key: parameter.value})
+        return total_parameters
 
 class Parameter:
 
