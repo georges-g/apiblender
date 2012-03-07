@@ -24,11 +24,7 @@ class PolicyManager:
 
     def signal_wrong_response_code(self, server, code):
         #TODO: what to do w the code?
-        print "WARNING: Wrong response status for %s" % server.name
-        self.servers_status[server.name]["sleeping_state"] = True
-        if not self.servers_status[server.name]["sleeping_since"]:
-            self.servers_status[server.name]["sleeping_since"] = datetime.now()
-
+        print "WARNING: Wrong response status:%s for %s" % (code, server.name)
 
     def get_server_request_count(self, server):
         return self.servers_status[server.name]["request_count"]
