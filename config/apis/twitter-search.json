@@ -2,7 +2,6 @@
     "name": "twitter-search",
     "host": "search.twitter.com",
     "port": 80,
-    "authentication": null,
     "policy": {
         "active": true,
         "requests_per_hour": 400,

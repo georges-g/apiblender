@@ -8,6 +8,11 @@ ARCOMEM project (http://arcomem.eu).
 Requirements
 ------------
 python 2.7.1+
+oauth2 python implementation
+    cd /tmp/
+    wget https://github.com/simplegeo/python-oauth2
+    cd python-oauth2
+    sudo python setup.py install
 
 Run
 ---

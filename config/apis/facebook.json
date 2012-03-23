@@ -2,14 +2,6 @@
 	"name": "facebook",
 	"host": "graph.facebook.com",
 	"port": 443,
-	"authentication": {
-		"type": "simple",
-		"path": "/oauth/access_token",
-		"parameters": { "client_id": "YOUR_CLIENT_ID",
-										"client_secret": "YOUR_CLIENT_SECRET",
-										"grant_type": "client_credentials"
-									}
-	},
 	"policy": {
 		"active": true,
 		"requests_per_hour": 200,

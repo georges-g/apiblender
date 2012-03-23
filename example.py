@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # A very simple example of API Blender
+import main
 
-import apiblender
-blender = apiblender.Blender()
+blender = main.Blender()
 
 def get_all_twitter_pages(target_blender, keyword):
     target_blender.load_server("twitter-search")

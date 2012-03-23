@@ -1,5 +1,5 @@
-import os
 import sys
+import os
 import json
 import urllib
 import httplib
@@ -43,11 +43,8 @@ class Blender:
             with open(server_config_path, 'r') as server_config_file:
                 server_config = json.load(server_config_file)
             self.server = serverclasses.Server(server_config)
-            if self.server.policy:
-                self.policy_manager.add_server(self.server)
-            if self.server.auth:
-                if not self.auth_manager.add_server(self.server):
-                    self.server = None
+            self.policy_manager.add_server(self.server)
+            self.auth_manager.add_server(self.server)
 
     def list_interactions(self):
         for interaction in self.server.interactions:
@@ -84,44 +81,30 @@ class Blender:
         if not self.interaction:
             print('ERROR blending: no interaction loaded.')
             return None
-        status = None
+        content, headers = self.make_request()
+        self.check_response(headers.status)
+        prepared_content = self.prepare_content(content)
+        data = {   "raw_content": content,
+                   "prepared_content": prepared_content,
+                   "headers": headers }
+        print ">> Status code: %s Data: %s" \
+                % (headers.status, str(prepared_content)[0:140])
+        return data 
+
+    def make_request(self):
         if not self.policy_manager.get_request_permission(self.server):
             sleeping_time = self.policy_manager.get_sleeping_time(self.server)
             print "WARNING: Sleeping for: %s seconds" % (sleeping_time)
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
-        content, status = self.make_request()
-        success = self.check_response(status)
-        data = self.prepare_content(content)
-        ready_content = {   "success": success,
-                            "data": data,
-                            "status_code": status}
-        print ">>Success:%s  Status code: %s Data: %s" \
-                % (success, status, str(data)[0:140])
-        return ready_content 
-
-    def make_request(self):
-        total_parameters = self.interaction.request.get_total_parameters()
-        # TODO: authmanager method
-        if self.auth_manager.exists_server(self.server):
-            total_parameters.update(
-                    auth_manager.servers["server.name"])
-            c = httplib.HTTPSConnection(self.server.host, self.server.port,
-                                        timeout = 10)
-        else:
-            c = httplib.HTTPConnection(self.server.host, self.server.port,
-                                       timeout = 10)
-        total_path = "%s?%s" % (self.interaction.request.root_path, 
-                                urllib.urlencode(total_parameters))
-        print "> Request: %s%s" % (self.server.host, total_path) 
-        c.request(self.interaction.request.method, total_path)
-        response = c.getresponse()
-        content = response.read()
-        status = response.status
-        c.close()
+        total_url_parameters = self.interaction.request.get_total_parameters()
+        print total_url_parameters
+        content, headers = self.auth_manager.make_request(  \
+                                 self.server, \
+                                 self.interaction,   \
+                                 total_url_parameters)
         self.policy_manager.signal_server_request(self.server)
-        # TODO: return whole object, clone?
-        return content, status 
+        return content, headers
     
     def check_response(self, status):
 # TODO: check response.read
