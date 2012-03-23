@@ -9,10 +9,13 @@ Requirements
 ------------
 * python 2.7.1+
 * oauth2 python implementation
-```bash
+```
     cd /tmp/
+
     git clone https://github.com/simplegeo/python-oauth2
+
     cd python-oauth2
+
     sudo python setup.py install
 ```
 
@@ -22,7 +25,7 @@ Run
 * If you want to use authentication, config config/apis/auth
 
 Then run:
-```bash
+```
 ./example.py
 ```
 
