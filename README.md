@@ -9,7 +9,7 @@ Requirements
 ------------
 * python 2.7.1+
 * oauth2 python implementation
-```
+```bash
     cd /tmp/
 
     git clone https://github.com/simplegeo/python-oauth2
