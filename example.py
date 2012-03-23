@@ -29,8 +29,8 @@ def get_my_friends(target_blender, screen_name):
     target_blender.set_parameters({"screen_name": screen_name})
     target_blender.blend()
 
+just_one_facebook_page(blender, "good spirit")
+get_all_twitter_pages(blender, "good spirit")
 get_my_followers(blender, "twitterapi")
 get_my_friends(blender, "twitterapi")
-#just_one_facebook_page(blender, "good spirit")
-#get_all_twitter_pages(blender, "good spirit")
 

@@ -19,7 +19,7 @@ class AuthManager:
         if server.name not in self.servers:
             auth_config_file = "%s%s.json" % (AUTH_PATH, server.name)
             if not os.path.exists(auth_config_file):
-                new_auth = AuthNone()
+                current_auth = AuthNone()
             else:
                 with open(auth_config_file, 'r') as config_file:
                     auth_config = json.load(config_file)

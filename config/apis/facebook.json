@@ -13,7 +13,7 @@
 			"name": "search",
 			"description": "search with a keyword",
 			"request": {
-				"root_path": "/path",
+				"root_path": "/search",
 				"method": "GET",
 				"parameters": [
                     [ "q", "string", false, null ],

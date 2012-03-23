@@ -16,7 +16,9 @@ oauth2 python implementation
 
 Run
 ---
-./example.py
+Configure config/general.json
+If you want to use authentication, config config/apis/auth
+Run ./example.py
 
 License
 -------
