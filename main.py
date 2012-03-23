@@ -82,13 +82,13 @@ class Blender:
             print('ERROR blending: no interaction loaded.')
             return None
         content, headers = self.make_request()
-        self.check_response(headers.status)
+        self.check_response(headers['status'])
         prepared_content = self.prepare_content(content)
         data = {   "raw_content": content,
                    "prepared_content": prepared_content,
                    "headers": headers }
         print ">> Status code: %s Data: %s" \
-                % (headers.status, str(prepared_content)[0:140])
+                % (headers['status'], str(prepared_content)[0:140])
         return data 
 
     def make_request(self):

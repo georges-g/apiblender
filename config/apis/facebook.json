@@ -1,7 +1,7 @@
 {
 	"name": "facebook",
 	"host": "graph.facebook.com",
-	"port": 443,
+	"port": 80,
 	"policy": {
 		"active": true,
 		"requests_per_hour": 200,

@@ -52,10 +52,11 @@ class AuthNone(Authentication):
                                     timeout = 10 )
         total_path = "%s?%s" % (    interaction.request.root_path, 
                                     urllib.urlencode(url_parameters) )
-        print "> Request: %s%s" % (server.host, total_path) 
+        print "> Request: %s:%s%s" % (server.host, server.port, total_path) 
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
-        headers = response.getheaders()
+        headers = dict((x,y) for x,y in response.getheaders())
+        headers.update({'status': response.status})
         content = response.read()
         c.close()
         return content, headers
@@ -99,7 +100,8 @@ class AuthSimple(Authentication):
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
-        headers = response.getheaders()
+        headers = dict((x,y) for x,y in response.getheaders())
+        headers.update({'status': response.status})
         c.close()
         return content, headers
  
