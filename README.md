@@ -7,7 +7,7 @@ ARCOMEM project, <http://arcomem.eu>.
 
 Requirements
 ------------
-* python 2.7.1+
+* Python 2.7.1+
 * Simplegeo oauth2 python implementation:
     1. cd /tmp/
     2. git clone https://github.com/simplegeo/python-oauth2
