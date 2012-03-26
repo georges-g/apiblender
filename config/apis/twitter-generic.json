@@ -44,6 +44,24 @@
                 "expected_status_code": 200,
                 "serialization_format": "JSON"
             }
+        },
+        {
+            "name": "followees",
+            "description": "",
+            "request": {
+                "root_path": "/1/friends/ids.json",
+                "method": "GET",
+                "parameters": [
+                    [ "user_id", "string", true, null ],
+                    [ "screen_name", "string", true, null ],
+                    [ "cursor", "string", true, -1 ],
+                    [ "stringify_ids", "boolean", true, false ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
         }
     ]
 }
