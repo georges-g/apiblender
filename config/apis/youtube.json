@@ -1,0 +1,30 @@
+{
+    "name": "youtube",
+    "host": "gdata.youtube.com",
+    "port": 80,
+    "policy": {
+        "active": true,
+        "requests_per_hour": 1000,
+        "too_many_calls_response_code": 420,
+        "too_many_calls_waiting_seconds": 600 
+    },
+    "interactions": [
+        {
+            "name": "search",
+            "request": {
+                "url_root_path": "/feeds/api/videos",
+                "method": "GET",
+                "url_params": [
+                    [ "q", "string", false, null ],
+                    [ "max-results", "int", true, 50 ],
+                    [ "start-index", "int", true, null ],
+                    [ "alt", "string", true, "json" ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        }
+    ]
+}
