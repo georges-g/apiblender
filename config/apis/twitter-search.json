@@ -13,9 +13,9 @@
             "name": "search",
             "description": "search for tweets, users, hashtags with keywords",
             "request": {
-                "root_path": "/search.json",
+                "url_root_path": "/search.json",
                 "method": "GET",
-                "parameters": [ 
+                "url_params": [ 
                     [ "q", "string", false, null ],
                     [ "rpp", "int", true, 100 ], 
                     [ "include_entities", "boolean", true, true ] 

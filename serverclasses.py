@@ -38,58 +38,66 @@ class Interaction:
     def __init__(self, interaction_config):
         # TODO: validation
         self.name = interaction_config["name"]
-        self.description = interaction_config["description"]
         self.request = Request(interaction_config["request"])
         self.response = Response(interaction_config["response"])
+        if 'description' in interaction_config.keys():
+            self.description = interaction_config["description"]
+        else: self.description = None
 
 
 class Request:
     
     def __init__(self, request_config):
         # TODO: validation
-        self.root_path = request_config["root_path"]
+        self.url_root_path = request_config["url_root_path"]
         self.method = request_config["method"]
         if "raw_content" in request_config.keys():
             self.raw_content = request_config["raw_content"]
-        self.parameters = []
-        if "parameters" in request_config.keys():
-            for parameter in request_config["parameters"]:
-                new_parameter = Parameter(parameter)
-                self.parameters.append(new_parameter)
+        self.url_params = []
+        if "url_params" in request_config.keys():
+            for url_param in request_config["url_params"]:
+                new_url_param = URLParameter(url_param)
+                self.url_params.append(new_url_param)
 
-    def set_parameter(self, parameter_to_set):
-        for parameter in self.parameters:
-            if parameter_to_set[0] == parameter.key:
-                parameter.update_parameter(parameter_to_set)
+    def set_url_param(self, url_param_to_set):
+        for url_param in self.url_params:
+            if url_param_to_set[0] == url_param.key:
+                url_param.update_url_param(url_param_to_set)
                 return
         # Small trick to create a new one if needed
-        parameter_config = [parameter_to_set[0], 
+        url_param_config = [url_param_to_set[0], 
                             None, 
                             None, 
-                            parameter_to_set[1]]
-        new_parameter = Parameter(parameter_config)
-        self.parameters.append(new_parameter)
+                            url_param_to_set[1]]
+        new_url_param = URLParameter(url_param_config)
+        self.url_params.append(new_url_param)
 
-    def get_total_parameters(self):
-        total_parameters = {}
-        for parameter in self.parameters:
-            if parameter.value != None:
-                total_parameters.update({parameter.key: parameter.value})
-        return total_parameters
+    def get_total_url_params(self):
+        total_url_params = {}
+        for url_param in self.url_params:
+            if url_param.value != None:
+                total_url_params.update({url_param.key: url_param.value})
+            elif not url_param.optional:
+                new_value = raw_input(  '%s is required, please input' \
+                                        ' its value: ' % url_param.key )
+                param_to_update = [url_param.key, new_value]
+                url_param.update_url_param(param_to_update)
+                total_url_params.update({url_param.key: url_param.value})
+        return total_url_params
 
 
-class Parameter:
+class URLParameter:
 
-    def __init__(self, parameter):
-        self.key = parameter[0]
-        self.value_type = parameter[1]
-        self.optional = parameter[2]
-        self.value = parameter[3]
+    def __init__(self, url_param):
+        self.key = url_param[0]
+        self.value_type = url_param[1]
+        self.optional = url_param[2]
+        self.value = url_param[3]
 
-    def update_parameter(self, parameter_to_set):
+    def update_url_param(self, url_param_to_set):
         #TODO: check param
-        self.key = parameter_to_set[0]
-        self.value = parameter_to_set[1]
+        self.key = url_param_to_set[0]
+        self.value = url_param_to_set[1]
 
 
 class Response:

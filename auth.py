@@ -50,7 +50,7 @@ class AuthNone(Authentication):
         c = httplib.HTTPConnection( server.host, 
                                     server.port,
                                     timeout = 10 )
-        total_path = "%s?%s" % (    interaction.request.root_path, 
+        total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
         print "> Request: %s:%s%s" % (server.host, server.port, total_path) 
         c.request(interaction.request.method, total_path)
@@ -94,7 +94,7 @@ class AuthSimple(Authentication):
                                     server.port,
                                     timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
-        total_path = "%s?%s" % (    interaction.request.root_path, 
+        total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
         print "> Request: %s%s" % (server.host, total_path) 
         c.request(interaction.request.method, total_path)
@@ -141,7 +141,8 @@ class AuthOauth2(Authentication):
         print "Authentication successful"
 
     def make_request(self, server, interaction, url_parameters):
-        req_url = "https://%s%s" % (server.host, interaction.request.root_path)
+        req_url = "https://%s%s" % (server.host, \
+                                    interaction.request.url_root_path)
         token = oauth.Token(    key=self.access_token['oauth_token'], 
                                 secret=self.access_token['oauth_token_secret'])
         consumer = oauth.Consumer(  key=self.consumer_key,

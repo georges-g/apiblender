@@ -13,9 +13,9 @@
 			"name": "search",
 			"description": "search with a keyword",
 			"request": {
-				"root_path": "/search",
+				"url_root_path": "/search",
 				"method": "GET",
-				"parameters": [
+				"url_params": [
                     [ "q", "string", false, null ],
                     [ "limit", "integer", true, 100 ]
                 ]

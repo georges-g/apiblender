@@ -13,9 +13,9 @@
             "name": "friends",
             "description": "Returns an array of numeric IDs for every user the specified user is following.",
             "request": {
-                "root_path": "/1/friends/ids.json",
+                "url_root_path": "/1/friends/ids.json",
                 "method": "GET",
-                "parameters": [
+                "url_params": [
                     [ "user_id", "string", true, null ],
                     [ "screen_name", "string", true, null ],
                     [ "cursor", "string", true, -1 ],
@@ -31,9 +31,9 @@
             "name": "followers",
             "description": "",
             "request": {
-                "root_path": "/1/followers/ids.json",
+                "url_root_path": "/1/followers/ids.json",
                 "method": "GET",
-                "parameters": [
+                "url_params": [
                     [ "user_id", "string", true, null ],
                     [ "screen_name", "string", true, null ],
                     [ "cursor", "string", true, -1 ],
@@ -49,9 +49,9 @@
             "name": "followees",
             "description": "",
             "request": {
-                "root_path": "/1/friends/ids.json",
+                "url_root_path": "/1/friends/ids.json",
                 "method": "GET",
-                "parameters": [
+                "url_params": [
                     [ "user_id", "string", true, null ],
                     [ "screen_name", "string", true, null ],
                     [ "cursor", "string", true, -1 ],

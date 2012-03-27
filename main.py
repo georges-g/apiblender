@@ -65,17 +65,17 @@ class Blender:
             self.interaction = None
             return None
 
-    def list_parameters(self):
+    def list_url_params(self):
         """List available servers."""
-        for parameter in self.interaction.request.parameters:
-            print parameter 
+        for url_param in self.interaction.request.url_params:
+            print url_param 
 
-    def set_parameters(self, parameters_to_set):
+    def set_url_params(self, url_params_to_set):
         if not self.interaction:
-            print('ERROR setting parameters: no interaction loaded.')
+            print('ERROR setting url_params: no interaction loaded.')
             return None
-        for k, v in parameters_to_set.iteritems():
-            self.interaction.request.set_parameter([k,v])
+        for k, v in url_params_to_set.iteritems():
+            self.interaction.request.set_url_param([k,v])
 
     def blend(self):
         if not self.interaction:
@@ -97,12 +97,12 @@ class Blender:
             print "WARNING: Sleeping for: %s seconds" % (sleeping_time)
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
-        total_url_parameters = self.interaction.request.get_total_parameters()
-        print total_url_parameters
+        total_url_params = self.interaction.request.get_total_url_params()
+        print total_url_params
         content, headers = self.auth_manager.make_request(  \
                                  self.server, \
                                  self.interaction,   \
-                                 total_url_parameters)
+                                 total_url_params)
         self.policy_manager.signal_server_request(self.server)
         return content, headers
     
