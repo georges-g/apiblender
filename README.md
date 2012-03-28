@@ -21,8 +21,8 @@ Run
     * rename the empty configuration files removing '-empty', e.g.,
       'facebook-empty.json' -> 'facebook.json'
     * Fill in your parameters
-* in Python:
-```python
+
+```
 import apiblender
 
 blender = apiblender.Blender()
@@ -50,12 +50,6 @@ result['raw_content']
 result['prepared_content']
 result['headers']
 ```
-    
-
-
-Then:
-
-``` ./example.py ```
 
 License
 -------
