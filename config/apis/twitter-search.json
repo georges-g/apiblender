@@ -6,7 +6,7 @@
         "active": true,
         "requests_per_hour": 400,
         "too_many_calls_response_code": 420,
-        "too_many_calls_waiting_seconds": 1
+        "too_many_calls_waiting_seconds": 600
     },
     "interactions": [
         {
