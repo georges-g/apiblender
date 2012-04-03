@@ -66,7 +66,7 @@ class Blender:
             return None
 
     def list_url_params(self):
-        """List available servers."""
+        """List available URL parameters."""
         for url_param in self.interaction.request.url_params:
             print url_param 
 

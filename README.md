@@ -16,12 +16,39 @@ Requirements
 
 Run
 ---
-* Configure config/general.json
-* If you want to use authentication, config config/apis/auth
+* (optional) Configure config/general.json
+* (optional) If you want to use authentication, configure config/apis/auth
+    * rename the empty configuration files removing '-empty', e.g.,
+      'facebook-empty.json' -> 'facebook.json'
+    * Fill in your parameters
 
-Then run:
 ```
-./example.py
+import apiblender
+
+blender = apiblender.Blender()
+
+# A server can be flickr or facebook  
+blender.list_servers()
+server_name = 'flickr' 
+blender.load_server(server_name) 
+
+# An interaction can be a search or retrieving a user's followers
+blender.list_interactions()
+interaction_name = 'photos_search'
+blender.load_interaction(interaction_name)
+
+# URL parameters are used to shape the request
+# Serveral parameters can be passed at the same time
+blender.list_url_params()
+key =   'tags'
+value = 'good spirit'
+blender.set_url_params({key: value})
+
+# blend() returns shaped data
+result = blender.blend()
+result['raw_content']
+result['prepared_content']
+result['headers']
 ```
 
 License
