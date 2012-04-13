@@ -87,8 +87,8 @@ class Blender:
         data = {   "raw_content": content,
                    "prepared_content": prepared_content,
                    "headers": headers }
-        print ">> Status code: %s Data: %s" \
-                % (headers['status'], str(prepared_content)[0:140])
+        print "\tStatus code: %s" % (headers['status'])
+        print "\tData: %s" % (str(prepared_content)[0:70])
         return data 
 
     def make_request(self):
@@ -98,7 +98,6 @@ class Blender:
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
         total_url_params = self.interaction.request.get_total_url_params()
-        print total_url_params
         content, headers = self.auth_manager.make_request(  \
                                  self.server, \
                                  self.interaction,   \

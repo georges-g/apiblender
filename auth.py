@@ -52,7 +52,7 @@ class AuthNone(Authentication):
                                     timeout = 10 )
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        print "> Request: %s:%s%s" % (server.host, server.port, total_path) 
+        print "Request: %s:%s%s" % (server.host, server.port, total_path) 
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         headers = dict((x,y) for x,y in response.getheaders())
@@ -96,7 +96,7 @@ class AuthSimple(Authentication):
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        print "> Request: %s%s" % (server.host, total_path) 
+        print "Request: %s%s" % (server.host, total_path) 
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
@@ -156,7 +156,6 @@ class AuthOauth2(Authentication):
 #            'oauth_consumer_key': consumer.key
 #        }
 #        params = parameters.update(oauth_params)
-#        print params
 #        req = oauth.Request(method="GET", url=url, parameters=params)
 #        signature_method = oauth.SignatureMethod_HMAC_SHA1()
 #        req.sign_request(signature_method, consumer, token)
