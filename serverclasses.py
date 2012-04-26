@@ -99,6 +99,12 @@ class URLParameter:
         self.key = url_param_to_set[0]
         self.value = url_param_to_set[1]
 
+    def __str__(self):
+        return  "\n\t{0:20} {1}".format('Key:', self.key) +\
+                "\n\t---" +\
+                "\n\t{0:20} {1}".format('Type:', self.value_type) +\
+                "\n\t{0:20} {1}".format('Optional:', self.optional) +\
+                "\n\t{0:20} {1}".format('Current value:', self.value)
 
 class Response:
 
