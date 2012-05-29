@@ -1,5 +1,5 @@
 {
-    "type": "simple",
+    "type": "access_token",
     "path": "/oauth/access_token",
     "parameters": { 
         "client_id": "YOUR_CLIENT_ID",

@@ -43,8 +43,8 @@ class Blender:
             with open(server_config_path, 'r') as server_config_file:
                 server_config = json.load(server_config_file)
             self.server = serverclasses.Server(server_config)
-            self.policy_manager.add_server(self.server)
-            self.auth_manager.add_server(self.server)
+            self.policy_manager.load_server(self.server)
+            self.auth_manager.load_server(self.server)
 
     def list_interactions(self):
         for interaction in self.server.interactions:

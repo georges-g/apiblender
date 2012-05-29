@@ -3,10 +3,9 @@
     "host": "api.flickr.com",
     "port": 80,
     "policy": {
-        "active": true,
-            "requests_per_hour": 1000,
+        "requests_per_hour": 1000,
         "too_many_calls_response_code": 420,
-        "too_many_calls_waiting_seconds": 600 
+        "too_many_calls_waiting_seconds": 300 
     },
     "interactions": [
         {
@@ -16,7 +15,6 @@
                 "method": "GET",
                 "url_params": [
                     [ "method", "string", false, "flickr.photos.search" ],
-                    [ "api_key", "string", false, null ],
                     [ "tags", "string", false, null ],
                     [ "per_page", "int", true, 500 ],
                     [ "page", "int", true, null ],
@@ -36,7 +34,6 @@
                 "method": "GET",
                 "url_params": [
                     [ "method","string",false,"flickr.photos.comments.getList" ],
-                    [ "api_key", "string", false, null ],
                     [ "photo_id", "int", false, null ],
                     [ "format", "string", true, "json" ],
                     [ "nojsoncallback", "boolean", false, 1 ]

@@ -6,7 +6,7 @@ class PolicyManager:
     def __init__(self):
         self.servers_status = {}
 
-    def add_server(self, server):
+    def load_server(self, server):
         if server.name not in self.servers_status:
             self.servers_status.update({ server.name: {
                                             "request_count": 0, 

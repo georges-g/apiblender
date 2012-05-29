@@ -1,6 +1,6 @@
 Description
 -------
-API Blender allows you to easily interact with multiple Web services.
+API Blender is a solution to easily interact with multiple Web services.
 
 API Blender has been developed as part of the
 ARCOMEM project, <http://arcomem.eu>.

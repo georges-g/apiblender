@@ -1,0 +1,6 @@
+{
+    "type": "api_key",
+    "url_parameters": { 
+        "api_key": "YOURAPIKEY"
+    }
+}

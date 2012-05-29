@@ -11,25 +11,24 @@ import oauth2 as oauth
 class AuthManager:
 
     def __init__(self):
-        self.servers = {}
         self.current_auth = None
 
-    def add_server(self, server):
+    def load_server(self, server):
+        self.current_auth = None
         #TODO Check when it was added rather than if it is added
-        if server.name not in self.servers:
-            auth_config_file = "%s%s.json" % (AUTH_PATH, server.name)
-            if not os.path.exists(auth_config_file):
-                current_auth = AuthNone()
-            else:
-                with open(auth_config_file, 'r') as config_file:
-                    auth_config = json.load(config_file)
-                if auth_config['type'] == 'oauth':
-                    current_auth = AuthOauth2(auth_config)
-                if auth_config['type'] == 'simple':
-                   current_auth = AuthSimple(auth_config)
-            self.current_auth = current_auth 
-            self.current_auth.request_parameters(server.host, server.port)
-            self.servers.update({ server.name: { "timestamp": time.time() } })
+        auth_config_file = "%s%s.json" % (AUTH_PATH, server.name)
+        if not os.path.exists(auth_config_file):
+            self.current_auth = AuthNone()
+        else:
+            with open(auth_config_file, 'r') as config_file:
+                auth_config = json.load(config_file)
+            if auth_config['type'] == 'oauth':
+                self.current_auth = AuthOauth2(auth_config)
+            if auth_config['type'] == 'access_token':
+               self.current_auth = AuthAccessToken(auth_config)
+            if auth_config['type'] == 'api_key':
+               self.current_auth = AuthAPIKey(auth_config)
+        self.current_auth.request_parameters(server.host, server.port)
     
     def make_request(self, server, interaction, url_parameters):
         return self.current_auth.make_request(  server, 
@@ -44,6 +43,9 @@ class Authentication:
 
 class AuthNone(Authentication):
     def __init__(self):
+        pass
+
+    def request_parameters(self, host, port):
         pass
 
     def make_request(self, server, interaction, url_parameters):
@@ -61,11 +63,8 @@ class AuthNone(Authentication):
         c.close()
         return content, headers
  
-    def request_parameters(self, host, port):
-        pass
 
-
-class AuthSimple(Authentication):
+class AuthAccessToken(Authentication):
 
     def __init__(self, auth_config):
         # TODO: validation
@@ -73,7 +72,7 @@ class AuthSimple(Authentication):
         self.url_parameters = auth_config["url_parameters"]
 
     def request_parameters(self, host, port):
-        c = httplib.HTTPSConnection(host, port, timeout = 10)
+        c = httplib.HTTPSConnection(host, 443, timeout = 10)
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
         c.request('GET', total_path)
         r = c.getresponse()
@@ -91,7 +90,7 @@ class AuthSimple(Authentication):
 
     def make_request(self, server, interaction, url_parameters):
         c = httplib.HTTPSConnection( server.host, 
-                                    server.port,
+                                    443,
                                     timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
@@ -167,3 +166,36 @@ class AuthOauth2(Authentication):
             "GET",\
             url_parameters )
         return content, headers
+
+
+class AuthAPIKey(Authentication):
+
+    def __init__(self, auth_config):
+        # TODO: validation
+        self.auth_url_parameters = auth_config["url_parameters"]
+        self.https = auth_config["https"]
+
+    def request_parameters(self, host, port):
+        pass
+
+    def make_request(self, server, interaction, url_parameters):
+        if self.https:
+            c = httplib.HTTPSConnection( server.host, 
+                                        443,
+                                        timeout = 10 )
+        else:
+            c = httplib.HTTPConnection( server.host, 
+                                        server.port,
+                                        timeout = 10 )
+        url_parameters.update(self.auth_url_parameters)
+        total_path = "%s?%s" % (    interaction.request.url_root_path, 
+                                    urllib.urlencode(url_parameters) )
+        print "Request: %s%s" % (server.host, total_path) 
+        c.request(interaction.request.method, total_path)
+        response = c.getresponse()
+        content = response.read()
+        headers = dict((x,y) for x,y in response.getheaders())
+        headers.update({'status': response.status})
+        c.close()
+        return content, headers
+
