@@ -7,7 +7,7 @@ import urllib
 
 import oauth2 as oauth
 
-AUTH_PATH = 'config/apis/auth/'
+AUTH_PATH = 'apiblender/config/apis/auth/'
 
 class AuthManager:
 
@@ -26,9 +26,10 @@ class AuthManager:
             if auth_config['type'] == 'oauth':
                 self.current_auth = AuthOauth2(auth_config)
             if auth_config['type'] == 'access_token':
-               self.current_auth = AuthAccessToken(auth_config)
+                self.current_auth = AuthAccessToken(auth_config)
             if auth_config['type'] == 'api_key':
-               self.current_auth = AuthAPIKey(auth_config)
+                print 'api_key'
+                self.current_auth = AuthAPIKey(auth_config)
         self.current_auth.request_parameters(server.host, server.port)
     
     def make_request(self, server, interaction, url_parameters):

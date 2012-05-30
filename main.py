@@ -122,7 +122,10 @@ class Blender:
     def prepare_content(self, content):
         #try:
         #TODO JSON or XML
-        content = json.loads(content)
+        try:
+            content = json.loads(content)
+        except Exception:
+            return content
         #except Exception:
             #TODO manage exception
         #print 'wrong results'

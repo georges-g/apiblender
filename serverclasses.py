@@ -6,7 +6,7 @@ import os
 import json
 from collections import defaultdict
 
-EXTRACTORS_PATH = 'config/apis/extraction/'
+EXTRACTORS_PATH = 'apiblender/config/apis/extraction/'
 
 class Server:
 
@@ -62,6 +62,7 @@ class Interaction:
         if 'description' in interaction_config.keys():
             self.description = interaction_config["description"]
         else: self.description = None
+        self.extractor = None
 
 
 class Request:
