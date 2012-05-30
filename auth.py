@@ -1,4 +1,3 @@
-AUTH_PATH = 'config/apis/auth/'
 import os
 import json
 import time
@@ -7,6 +6,8 @@ import httplib
 import urllib
 
 import oauth2 as oauth
+
+AUTH_PATH = 'config/apis/auth/'
 
 class AuthManager:
 

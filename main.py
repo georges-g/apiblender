@@ -127,9 +127,9 @@ class Blender:
             #TODO manage exception
         #print 'wrong results'
         #    return False
-        if self.interaction.response.extractor:
+        if self.interaction.extractor:
             ready_content = \
-                self.interaction.response.extractor.extract(content)
+                self.interaction.extractor.extract(content)
         else:
             ready_content = content 
         return ready_content
