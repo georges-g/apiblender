@@ -81,7 +81,21 @@ class Blender:
         if not self.interaction:
             print('ERROR blending: no interaction loaded.')
             return None
-        content, headers = self.make_request()
+        #Retries three times
+        request_not_made = True
+        i = 0
+        while request_not_made and i<3:
+            try:
+                content, headers = self.make_request()
+                request_not_made = False
+            except Exception:
+                i+=1
+        if request_not_made:
+            print "ERROR: Could not make request"
+            print "Server: %s Interaction: %s Parameters: %s" %\
+                    (   self.server.name, self.interaction.name,\
+                        self.interaction.request.url_params )
+            return None
         self.check_response(headers['status'])
         prepared_content = self.prepare_content(content)
         data = {   "raw_content": content,
