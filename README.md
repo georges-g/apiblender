@@ -9,12 +9,12 @@ Requirements
 ------------
 * Python 2.7.1+
 * Simplegeo oauth2 python implementation:
-```
+<pre>
 cd /tmp/
 git clone https://github.com/simplegeo/python-oauth2
 cd python-oauth2
 sudo python setup.py install
-```
+</pre>
 
 Run
 ---
