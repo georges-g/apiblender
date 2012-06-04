@@ -1,0 +1,8 @@
+**.pyc
+test*
+config/apis/auth/facebook.json
+config/apis/auth/google_plus.json
+config/apis/auth/youtube.json
+config/apis/auth/flickr.json
+config/apis/auth/twitter-generic.json
+todo
