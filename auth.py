@@ -7,7 +7,8 @@ import urllib
 
 import oauth2 as oauth
 
-AUTH_PATH = 'apiblender/config/apis/auth/'
+AUTH_PATH = os.path.dirname(__file__) + '/config/apis/auth/'
+
 
 class AuthManager:
 
@@ -72,9 +73,13 @@ class AuthAccessToken(Authentication):
         # TODO: validation
         self.url = auth_config["url"]
         self.url_parameters = auth_config["url_parameters"]
+        if "port" in auth_config.keys():
+            self.port = auth_config["port"]
+        else:
+            self.port = 443
 
-    def request_parameters(self, host, port):
-        c = httplib.HTTPSConnection(host, 443, timeout = 10)
+    def request_parameters(self, host):
+        c = httplib.HTTPSConnection(host, self.port, timeout = 10)
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
         c.request('GET', total_path)
         r = c.getresponse()
@@ -92,7 +97,7 @@ class AuthAccessToken(Authentication):
 
     def make_request(self, server, interaction, url_parameters):
         c = httplib.HTTPSConnection( server.host, 
-                                    443,
+                                    self.port,
                                     timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
@@ -115,8 +120,12 @@ class AuthOauth2(Authentication):
         self.request_token_url = auth_config["request_token_url"]
         self.access_token_url = auth_config["access_token_url"]
         self.authorize_url = auth_config["authorize_url"]
+        if "port" in auth_config.keys():
+            self.port = auth_config["port"]
+        else:
+            self.port = 443
 
-    def request_parameters(self, host, port):
+    def request_parameters(self, host):
         consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
         client = oauth.Client(consumer)
         # Getting the request token
@@ -175,7 +184,14 @@ class AuthAPIKey(Authentication):
     def __init__(self, auth_config):
         # TODO: validation
         self.auth_url_parameters = auth_config["url_parameters"]
-        self.https = auth_config["https"]
+        if 'https' in auth_config.keys():
+            self.https = auth_config["https"]
+        else:
+            self.https = false
+        if "port" in auth_config.keys():
+            self.port = auth_config["port"]
+        else:
+            self.port = 443
 
     def request_parameters(self, host, port):
         pass
@@ -183,13 +199,15 @@ class AuthAPIKey(Authentication):
     def make_request(self, server, interaction, url_parameters):
         if self.https:
             c = httplib.HTTPSConnection( server.host, 
-                                        443,
+                                        self.port,
                                         timeout = 10 )
         else:
             c = httplib.HTTPConnection( server.host, 
-                                        server.port,
+                                        self.port,
                                         timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
+        print url_parameters
+        print self.auth_url_parameters
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
         print "Request: %s%s" % (server.host, total_path) 

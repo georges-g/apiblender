@@ -1,5 +1,8 @@
 #!/usr/bin/python
-# A very simple example of API Blender
+# Simple examples of the options offered by API Blender
+# 
+# /!\ Example.py must be moved to a parent directory of apiblender
+#
 import main
 
 blender = main.Blender()

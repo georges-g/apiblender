@@ -2,5 +2,7 @@
     "type": "api_key",
     "url_parameters": { 
         "key": "YOURAPIKEY"
-    }
+    },
+    "https": true,
+    "port": 443
 }
