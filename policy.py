@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 class PolicyManager:
@@ -17,14 +18,15 @@ class PolicyManager:
         self.servers_status[server.name]["request_count"] += 1
     
     def signal_too_many_calls(self, server):
-        print "WARNING: Too many calls for %s" % server.name
+        logging.warning("Too many calls for %s" % server.name)
         self.servers_status[server.name]["sleeping_state"] = True
         if not self.servers_status[server.name]["sleeping_since"]:
             self.servers_status[server.name]["sleeping_since"] = datetime.now()
 
     def signal_wrong_response_code(self, server, code):
         #TODO: what to do w the code?
-        print "WARNING: Wrong response status:%s for %s" % (code, server.name)
+        logging.warning(    "Wrong response status:%s for %s" % \
+                            (code, server.name) )
 
     def get_server_request_count(self, server):
         return self.servers_status[server.name]["request_count"]

@@ -5,6 +5,10 @@ API Blender is a solution to easily interact with multiple Web services.
 API Blender has been developed as part of the
 ARCOMEM project, <http://arcomem.eu>.
 
+An article on the API Blender has been accepted at the WWW12 conference and
+is available on [Georges Gouriten's
+website](http://perso.telecom-paristech.fr/~gouriten/).
+
 Requirements
 ------------
 * Python 2.7.1+
@@ -48,8 +52,10 @@ blender.set_url_params({key: value})
 
 # blend() returns shaped data
 result = blender.blend()
+result['blender_config']
+result['timestamp']
 result['raw_content']
-result['prepared_content']
+result['loaded_content']
 result['headers']
 ```
 

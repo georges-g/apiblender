@@ -4,6 +4,7 @@ import time
 import urlparse
 import httplib
 import urllib
+import logging
 
 import oauth2 as oauth
 
@@ -29,7 +30,6 @@ class AuthManager:
             if auth_config['type'] == 'access_token':
                 self.current_auth = AuthAccessToken(auth_config)
             if auth_config['type'] == 'api_key':
-                print 'api_key'
                 self.current_auth = AuthAPIKey(auth_config)
         self.current_auth.request_parameters(server.host, server.port)
     
@@ -57,7 +57,8 @@ class AuthNone(Authentication):
                                     timeout = 10 )
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        print "Request: %s:%s%s" % (server.host, server.port, total_path) 
+        logging.info("Request: %s:%s%s" % \
+                    (server.host, server.port, total_path))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         headers = dict((x,y) for x,y in response.getheaders())
@@ -89,8 +90,8 @@ class AuthAccessToken(Authentication):
             # TODO The '=' is hardcoded, should it be different?
             auth_url_parameters = dict(http_response.split('='))
         except ValueError as detail:
-            print "ERROR, unexpected authentication response: " + detail
-            print "ERROR, cannot use authentication"
+            logging.error(  "Unexpected authentication response: \n" +
+                            detail + "\nCannot use authentication")
             return
         self.auth_url_parameters = auth_url_parameters 
 
@@ -102,7 +103,7 @@ class AuthAccessToken(Authentication):
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        print "Request: %s%s" % (server.host, total_path) 
+        logging.info("Request: %s%s" % (server.host, total_path))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
@@ -134,10 +135,9 @@ class AuthOauth2(Authentication):
                 raise Exception("Invalid response %s." % resp['status'])
         request_token = dict(urlparse.parse_qsl(content))
         # Ask confirmation from the user.
-        print "Go to the following link in your browser:"
-        print "%s?oauth_token=%s" % (   self.authorize_url, \
-                                        request_token['oauth_token'])
-        print 
+        print   "Go to the following link in your browser: \n" + \
+                "%s?oauth_token=%s" % ( self.authorize_url, \
+                                        request_token['oauth_token']) + "\n"
         accepted = 'n'
         while accepted.lower() == 'n':
             accepted = raw_input('Have you authorized me? (y/n) ')
@@ -206,11 +206,9 @@ class AuthAPIKey(Authentication):
                                         self.port,
                                         timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
-        print url_parameters
-        print self.auth_url_parameters
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        print "Request: %s%s" % (server.host, total_path) 
+        logging.info("Request: %s%s" % (server.host, total_path))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()

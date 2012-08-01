@@ -4,12 +4,15 @@ import json
 import urllib
 import httplib
 import time
+import logging
+import datetime
 
 import serverclasses
 import policy
 import auth
 
-GENERAL_CONFIG = os.path.dirname(__file__) + "/config/general.json"
+GENERAL_CONFIG =    os.path.dirname(__file__).rstrip('/') + "/" + \
+                    "config/general.json"
 
 class Blender:
     """You have to create one."""
@@ -27,7 +30,8 @@ class Blender:
         with open(GENERAL_CONFIG, 'r') as config_file:
             general_config = json.load(config_file)
         self.user_agent = general_config["user-agent"]
-        self.apis_path = os.path.dirname(__file__) + general_config["apis_path"] 
+        self.apis_path =    os.path.dirname(__file__).rstrip('/') + "/" + \
+                            general_config["apis_path"] 
         
     def list_servers(self):
         """List available servers."""
@@ -37,7 +41,7 @@ class Blender:
     def load_server(self, server_name):
         server_config_path = self.apis_path + server_name + '.json'
         if not os.path.exists(server_config_path):
-            print('ERROR: File %s was not found.' % server_config_path)
+            logging.error('File %s was not found.' % server_config_path)
             self.server = None
         else:
             with open(server_config_path, 'r') as server_config_file:
@@ -52,7 +56,7 @@ class Blender:
 
     def load_interaction(self, interaction_name):
         if not self.server:
-            print('ERROR loading %s: no server loaded.' % interaction_name)
+            logging.error('Loading %s: no server loaded.' % interaction_name)
             self.interaction = None
             return None
         for avb_interaction in self.server.interactions:
@@ -60,7 +64,7 @@ class Blender:
                 self.interaction = avb_interaction
                 return
         else:
-            print('ERROR loading %s: not found on server %s.'\
+            logging.error('Loading %s: not found on server %s.'\
                     % (interaction_name, self.server.name))
             self.interaction = None
             return None
@@ -72,14 +76,14 @@ class Blender:
 
     def set_url_params(self, url_params_to_set):
         if not self.interaction:
-            print('ERROR setting url_params: no interaction loaded.')
+            logging.error('Setting url_params: no interaction loaded.')
             return None
         for k, v in url_params_to_set.iteritems():
             self.interaction.request.set_url_param([k,v])
 
     def blend(self):
         if not self.interaction:
-            print('ERROR blending: no interaction loaded.')
+            logging.error('Blending: no interaction loaded.')
             return None
         #Retries three times
         request_not_made = True
@@ -91,24 +95,33 @@ class Blender:
             except Exception:
                 i+=1
         if request_not_made:
-            print "ERROR: Could not make request"
-            print "Server: %s Interaction: %s Parameters: %s" %\
-                    (   self.server.name, self.interaction.name,\
-                        self.interaction.request.url_params )
+            logging.error("Could not make request \n" + \
+                "Server: %s Interaction: %s" %\
+                (self.server.name, self.interaction.name))
+            for url_param in self.interaction.request.url_params:
+                logging.error("Parameter: %s" % (url_param))
             return None
         self.check_response(headers['status'])
         prepared_content = self.prepare_content(content)
-        data = {   "raw_content": content,
-                   "prepared_content": prepared_content,
-                   "headers": headers }
-        print "\tStatus code: %s" % (headers['status'])
-        print "\tData: %s" % (str(prepared_content)[0:70])
+        blender_config = {  
+            "server": self.server.name,
+            "interaction": self.interaction.name,
+            "parameters": [url_param.convert_to_dict() for url_param in\
+                        self.interaction.request.url_params],
+        }
+        data = {    "blender_config": blender_config,
+                    "timestamp": str(datetime.datetime.now()),
+                    "raw_content": content,
+                    "prepared_content": prepared_content,
+                    "headers": headers }
+        logging.info("\tStatus code: %s" % (headers['status']) + "\n" + \
+                     "\tData: %s" % (str(prepared_content)[0:70]))
         return data 
 
     def make_request(self):
         if not self.policy_manager.get_request_permission(self.server):
             sleeping_time = self.policy_manager.get_sleeping_time(self.server)
-            print "WARNING: Sleeping for: %s seconds" % (sleeping_time)
+            logging.warning("Sleeping for: %s seconds" % (sleeping_time))
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
         total_url_params = self.interaction.request.get_total_url_params()
