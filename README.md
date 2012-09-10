@@ -20,14 +20,15 @@ cd python-oauth2
 sudo python setup.py install
 </pre>
 
-Run
+Installation
 ---
 * <pre> sudo setup.py install </pre>
 * Go to the apiblender folder (usually
-/usr/local/lib/python2.7/dist-packages/apiblender/), configure.json the
-**.json.example files and rename them into .json files.
+/usr/local/lib/python2.7/dist-packages/apiblender/), configure the
+**.json.example files and rename them into .json files. You can also
+change the **.json files.
 
-Using the library
+The library
 ---
 
 ```python

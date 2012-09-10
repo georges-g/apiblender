@@ -1,11 +1,9 @@
 #!/usr/bin/python
 # Simple examples of the options offered by API Blender
-# 
-# /!\ Example.py must be moved to a parent directory of apiblender
 #
-import main
+import apiblender
 
-blender = main.Blender()
+blender = apiblender.Blender()
 
 def get_some_pics_and_comments(target_blender, keyword):
     target_blender.load_server("flickr")
