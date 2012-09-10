@@ -30,7 +30,7 @@ Run
 Using the library
 ---
 
-```
+```python
 import apiblender
 
 blender = apiblender.Blender()
