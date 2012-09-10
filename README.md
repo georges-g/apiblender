@@ -5,9 +5,9 @@ API Blender is a solution to easily interact with multiple Web services.
 API Blender has been developed as part of the
 ARCOMEM project, <http://arcomem.eu>.
 
-An article on the API Blender has been accepted at the WWW12 conference and
-is available on [Georges Gouriten's
-website](http://perso.telecom-paristech.fr/~gouriten/).
+An article on the API Blender has been presented at the WWW12 conference and
+is available on 
+[Georges Gouriten's website](http://perso.telecom-paristech.fr/~gouriten/).
 
 Requirements
 ------------
