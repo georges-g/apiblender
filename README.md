@@ -33,26 +33,27 @@ Using the library
 ```python
 import apiblender
 
+# Create a blender
 blender = apiblender.Blender()
 
-# A server can be flickr or facebook  
+# Load a server
 blender.list_servers()
 server_name = 'flickr' 
 blender.load_server(server_name) 
 
-# An interaction can be a search or retrieving a user's followers
+# Load an interaction 
 blender.list_interactions()
 interaction_name = 'photos_search'
 blender.load_interaction(interaction_name)
 
-# URL parameters are used to shape the request
+# Set the parameters
 # Serveral parameters can be passed at the same time
 blender.list_url_params()
 key =   'tags'
 value = 'good spirit'
 blender.set_url_params({key: value})
 
-# blend() returns shaped data
+# Execute the request and get the results
 result = blender.blend()
 result['blender_config']
 result['timestamp']
