@@ -1,0 +1,66 @@
+{
+    "name": "twitter-general",
+    "host": "api.twitter.com",
+    "port": 80,
+    "policy": {
+        "requests_per_hour": 150,
+        "too_many_calls_response_code": 420,
+        "too_many_calls_waiting_seconds": 300 
+    },
+    "interactions": [
+        {
+            "name": "friends",
+            "description": "Returns an array of numeric IDs for every user the specified user is following.",
+            "request": {
+                "url_root_path": "/1/friends/ids.json",
+                "method": "GET",
+                "url_params": [
+                    [ "user_id", "string", true, null ],
+                    [ "screen_name", "string", true, null ],
+                    [ "cursor", "string", true, -1 ],
+                    [ "stringify_ids", "boolean", true, false ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        },
+        {
+            "name": "followers",
+            "description": "",
+            "request": {
+                "url_root_path": "/1/followers/ids.json",
+                "method": "GET",
+                "url_params": [
+                    [ "user_id", "string", true, null ],
+                    [ "screen_name", "string", true, null ],
+                    [ "cursor", "string", true, -1 ],
+                    [ "stringify_ids", "boolean", true, false ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        },
+        {
+            "name": "followees",
+            "description": "",
+            "request": {
+                "url_root_path": "/1/friends/ids.json",
+                "method": "GET",
+                "url_params": [
+                    [ "user_id", "string", true, null ],
+                    [ "screen_name", "string", true, null ],
+                    [ "cursor", "string", true, -1 ],
+                    [ "stringify_ids", "boolean", true, false ]
+                ]
+            },
+            "response": {
+                "expected_status_code": 200,
+                "serialization_format": "JSON"
+            }
+        }
+    ]
+}

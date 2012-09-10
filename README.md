@@ -22,11 +22,11 @@ sudo python setup.py install
 
 Installation
 ---
-* <pre> sudo setup.py install </pre>
+* sudo setup.py install
 * Go to the apiblender folder (usually
 /usr/local/lib/python2.7/dist-packages/apiblender/), configure the
-**.json.example files and rename them into .json files. You can also
-change the **.json files.
+json.example files in the config directory and rename them into .json files. You can also
+change the json files.
 
 The library
 ---

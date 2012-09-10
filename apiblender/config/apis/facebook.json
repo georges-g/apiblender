@@ -1,0 +1,28 @@
+{
+	"name": "facebook",
+	"host": "graph.facebook.com",
+	"port": 80,
+	"policy": {
+		"requests_per_hour": 200,
+		"too_many_calls_response_code": 420,
+		"too_many_calls_waiting_seconds": 300 
+	},
+	"interactions": [
+		{
+			"name": "search",
+			"description": "search with a keyword",
+			"request": {
+				"url_root_path": "/search",
+				"method": "GET",
+				"url_params": [
+                    [ "q", "string", false, null ],
+                    [ "limit", "integer", true, 100 ]
+                ]
+			},
+			"response": {
+				"expected_status_code": 200,
+				"serialization_format": "JSON"
+			}
+		}
+	]
+}
