@@ -6,7 +6,6 @@ apiblender/example.py
 apiblender/main.py
 apiblender/policy.py
 apiblender/serverclasses.py
-apiblender/test_text.py
 apiblender/config/general.json.example
 apiblender/config/apis/facebook.json.example
 apiblender/config/apis/flickr.json.example

@@ -22,11 +22,13 @@ sudo python setup.py install
 
 Run
 ---
-* (optional) Configure config/general.json
-* (optional) If you want to use authentication, configure config/apis/auth
-    * rename the empty configuration files removing '-empty', e.g.,
-      'facebook-empty.json' -> 'facebook.json'
-    * Fill in your parameters
+* <pre> sudo setup.py install </pre>
+* Go to the apiblender folder (usually
+/usr/local/lib/python2.7/dist-packages/apiblender/), configure.json the
+**.json.example files and rename them into .json files.
+
+Using the library
+---
 
 ```
 import apiblender
