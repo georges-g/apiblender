@@ -54,9 +54,10 @@ blender.set_url_params({key: value})
 result = blender.blend()
 result['blender_config']
 result['timestamp']
-result['raw_content']
-result['loaded_content']
+result['raw_content']               # Result content as a string
+result['loaded_content']            # Result content as a python dict
 result['headers']
+result['successful_interaction']    # Boolean
 ```
 
 License

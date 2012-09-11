@@ -118,8 +118,8 @@ class Blender:
             return None
         # Check the status of the response
         successful_interaction = self.check_status(headers['status'])
-        # Prepare (load) the content
-        prepared_content = self.prepare_content(content)
+        # Loads the content
+        loaded_content = self.load_content(content)
         # Define the object the blender returns
         blender_config = {  
             "server": self.server.name,
@@ -130,11 +130,11 @@ class Blender:
         data = {    "blender_config": blender_config,
                     "timestamp": str(datetime.datetime.now()),
                     "raw_content": content,
-                    "prepared_content": prepared_content,
+                    "loaded_content": prepared_content,
                     "headers": headers,
                     "successful_interaction": successful_interaction}
         logging.info("\tStatus: %s" % (headers['status']) + "\n" + \
-                     "\tData: %s" % (str(prepared_content)[0:70]))
+                     "\tData: %s" % (str(loaded_content)[0:70]))
         return data 
 
     def make_request(self):
@@ -172,8 +172,8 @@ class Blender:
                     status)
             return False
 
-    def prepare_content(self, content):
-        """ Prepares (loads) the raw data. Currently only JSON. """
+    def load_content(self, content):
+        """ Loads the raw content into a python dict """
         if self.interaction.response.serialization_format == "JSON":
             try:
                 content = json.loads(content)
