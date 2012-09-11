@@ -12,8 +12,9 @@ import serverclasses
 import policy
 import auth
 
-GENERAL_CONFIG =    os.path.dirname(__file__).rstrip('/') + "/" + \
-                    "config/general.json"
+GENERAL_CONFIG = os.path.join(   os.path.dirname(__file__), 
+                                "config", 
+                                "general.json"  )
 
 class Blender:
     """A Blender allows you to make a request after you load a server and an
@@ -37,8 +38,7 @@ class Blender:
         with open(GENERAL_CONFIG, 'r') as config_file:
             general_config = json.load(config_file)
         self.user_agent = general_config["user-agent"]
-        self.apis_path =    os.path.dirname(__file__).rstrip('/') + "/" + \
-                            general_config["apis_path"] 
+        self.apis_path = os.path.join(os.path.dirname(__file__), general_config["apis_path"])
         
     def list_servers(self):
         """Lists available servers from the config/apis directory """
@@ -48,7 +48,7 @@ class Blender:
 
     def load_server(self, server_name):
         """ Loads a server """
-        server_config_path = self.apis_path + server_name + '.json'
+        server_config_path = os.path.join(self.apis_path, server_name+'.json')
         if not os.path.exists(server_config_path):
             logging.error('File %s was not found.' % server_config_path)
             self.server = None
@@ -130,7 +130,7 @@ class Blender:
         data = {    "blender_config": blender_config,
                     "timestamp": str(datetime.datetime.now()),
                     "raw_content": content,
-                    "loaded_content": prepared_content,
+                    "loaded_content": loaded_content,
                     "headers": headers,
                     "successful_interaction": successful_interaction}
         logging.info("\tStatus: %s" % (headers['status']) + "\n" + \
