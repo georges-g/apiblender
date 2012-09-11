@@ -8,7 +8,7 @@ import logging
 
 import oauth2 as oauth
 
-AUTH_PATH = os.path.dirname(__file__) + '/config/apis/auth/'
+AUTH_PATH = os.path.join(os.path.dirname(__file__), 'config', 'apis', 'auth')
 
 # TODO: Auth config could be checked against a schema
 
@@ -20,7 +20,7 @@ class AuthManager:
     def load_server(self, server):
         """ Loads a server looking at his auth config file """
         # Loads the config file
-        auth_config_file = "%s%s.json" % (AUTH_PATH, server.name)
+        auth_config_file = os.path.join(AUTH_PATH, server.name + '.json')
         # If no config file, then no authentication
         if not os.path.exists(auth_config_file):
             self.current_auth = AuthNone()
@@ -70,7 +70,7 @@ class AuthNone(Authentication):
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logging.info("Request: %s" (self.current_request_url))
+        logging.info("Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         headers = dict((x,y) for x,y in response.getheaders())
@@ -96,7 +96,7 @@ class AuthAccessToken(Authentication):
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
         self.current_request_url = "%s:%s%s" % \
                     (host, self.port, total_path)
-        logging.info("Request: %s" (self.current_request_url))
+        logging.info("Request: %s" % (self.current_request_url))
         c.request('GET', total_path)
         r = c.getresponse()
         http_response = r.read()
@@ -120,7 +120,7 @@ class AuthAccessToken(Authentication):
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logging.info("Request: %s" (self.current_request_url))
+        logging.info("Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
@@ -180,7 +180,7 @@ class AuthOauth2(Authentication):
         client = oauth.Client(consumer, token)
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, url_parameters)
-        logging.info("Request: %s" (self.current_request_url))
+        logging.info("Request: %s" % (self.current_request_url))
         headers, content = client.request( \
             req_url, \
             interaction.request.method,\
@@ -209,18 +209,18 @@ class AuthAPIKey(Authentication):
     def make_request(self, server, interaction, url_parameters):
         if self.https:
             c = httplib.HTTPSConnection( server.host, 
-                                        self.port,
-                                        timeout = 10 )
+                                         self.port,
+                                         timeout = 10 )
         else:
             c = httplib.HTTPConnection( server.host, 
                                         self.port,
                                         timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
-        total_path = "%s?%s" % (    interaction.request.url_root_path, 
-                                    urllib.urlencode(url_parameters) )
+        total_path = "%s?%s" % ( interaction.request.url_root_path, 
+                                 urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logging.info("Request: %s" (self.current_request_url))
+        logging.info("Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()

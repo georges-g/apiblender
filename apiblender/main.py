@@ -15,6 +15,7 @@ import auth
 GENERAL_CONFIG = os.path.join(   os.path.dirname(__file__), 
                                 "config", 
                                 "general.json"  )
+APIS_PATH = os.path.join(os.path.dirname(__file__), 'config', 'apis')
 
 class Blender:
     """A Blender allows you to make a request after you load a server and an
@@ -38,17 +39,16 @@ class Blender:
         with open(GENERAL_CONFIG, 'r') as config_file:
             general_config = json.load(config_file)
         self.user_agent = general_config["user-agent"]
-        self.apis_path = os.path.join(os.path.dirname(__file__), general_config["apis_path"])
         
     def list_servers(self):
         """Lists available servers from the config/apis directory """
-        for filename in os.listdir(self.apis_path):
+        for filename in os.listdir(APIS_PATH):
             if filename.split('.')[-1] == 'json':
                 print filename.split('.json')[0]
 
     def load_server(self, server_name):
         """ Loads a server """
-        server_config_path = os.path.join(self.apis_path, server_name+'.json')
+        server_config_path = os.path.join(APIS_PATH, server_name+'.json')
         if not os.path.exists(server_config_path):
             logging.error('File %s was not found.' % server_config_path)
             self.server = None

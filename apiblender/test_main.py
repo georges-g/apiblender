@@ -19,5 +19,8 @@ for config in configs_to_test:
     blender.load_interaction(config[1])
     blender.set_url_params({config[2]: config[3]})
     res = blender.blend()
-    print "%s, %s: %s" % (config[0], config[1], \
-        (res['successful_interaction']))
+    if res['successful_interaction']:
+        print "%s, %s: %s" % (config[0], config[1], \
+            (res['successful_interaction']))
+    else: 
+        print "%s" % res
