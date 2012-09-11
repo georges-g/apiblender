@@ -5,6 +5,8 @@ apiblender/auth.py
 apiblender/main.py
 apiblender/policy.py
 apiblender/serverclasses.py
+apiblender/test_main.py
+apiblender/config/general.json
 apiblender/config/apis/facebook.json
 apiblender/config/apis/flickr.json
 apiblender/config/apis/google_plus.json

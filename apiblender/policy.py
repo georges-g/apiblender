@@ -3,11 +3,17 @@ from datetime import datetime
 
 class PolicyManager:
     """ Limit request when needed """
-
+    # 
+    # TODO: the request counter is not properly implemented, it should be
+    # resetted periodically. 
+    # So far, it sleeps only if a too many cally calls status is
+    # received, it seems to work.
+    #
     def __init__(self):
         self.servers_status = {}
 
     def load_server(self, server):
+        # Updates servers_status
         if server.name not in self.servers_status:
             self.servers_status.update({ server.name: {
                                             "request_count": 0, 
@@ -19,25 +25,22 @@ class PolicyManager:
     
     def signal_too_many_calls(self, server):
         logging.warning("Too many calls for %s" % server.name)
+        # Blender goes to sleep
         self.servers_status[server.name]["sleeping_state"] = True
         if not self.servers_status[server.name]["sleeping_since"]:
             self.servers_status[server.name]["sleeping_since"] = datetime.now()
 
-    def signal_wrong_response_code(self, server, code):
-        #TODO: what to do w the code?
+    def signal_wrong_response_status(self, server, status):
+        #TODO: Something else could happen with the wrong status
         logging.warning(    "Wrong response status:%s for %s" % \
-                            (code, server.name) )
+                            (status, server.name) )
 
     def get_server_request_count(self, server):
         return self.servers_status[server.name]["request_count"]
 
     def get_request_permission(self, server):
+        # Checks the servers_status to see if it can make the request 
         if self.servers_status[server.name]["sleeping_state"]:
-            return False
-        elif (self.servers_status[server.name]["request_count"]
-                    >= server.policy.requests_per_hour):
-            self.servers_status[server.name]["sleeping_state"] = True
-            self.servers_status[server.name]["sleeping_since"] = datetime.now()
             return False
         else:
             return True

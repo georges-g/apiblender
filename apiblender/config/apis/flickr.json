@@ -4,7 +4,7 @@
     "port": 80,
     "policy": {
         "requests_per_hour": 1000,
-        "too_many_calls_response_code": 420,
+        "too_many_calls_response_status": 420,
         "too_many_calls_waiting_seconds": 300 
     },
     "interactions": [
@@ -23,7 +23,7 @@
                 ]
             },
             "response": {
-                "expected_status_code": 200,
+                "expected_status": 200,
                 "serialization_format": "JSON"
             }
         },
@@ -40,7 +40,7 @@
                 ]
             },
             "response": {
-                "expected_status_code": 200,
+                "expected_status": 200,
                 "serialization_format": "JSON"
             }
         }

@@ -7,10 +7,10 @@ setup(  name='apiblender',
         author_email='georges.gouriten@gmail.com',
         url='http://github.com/netiru/apiblender',
         packages=['apiblender'],
-        package_data={'apiblender': [   'config/*.example', 
+        package_data={'apiblender': [   'config/*.json', 
                                         'config/apis/*.json',
                                         'config/apis/auth/*.example']},
-        requires = ['oauth2'],
+        requires = ['oauth2', 'xmltodict'],
         license = "GNU/GPL v3 License",
         keywords="api"    )
 

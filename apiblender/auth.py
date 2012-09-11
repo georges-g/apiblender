@@ -17,34 +17,43 @@ class AuthManager:
         self.current_auth = None
 
     def load_server(self, server):
-        self.current_auth = None
-        #TODO Check when it was added rather than if it is added
+        """ Loads a server looking at his auth config file """
+        # Loads the config file
         auth_config_file = "%s%s.json" % (AUTH_PATH, server.name)
+        # If no config file, then no authentication
         if not os.path.exists(auth_config_file):
             self.current_auth = AuthNone()
+        # Else, pick the right authentication
         else:
             with open(auth_config_file, 'r') as config_file:
                 auth_config = json.load(config_file)
             if auth_config['type'] == 'oauth':
                 self.current_auth = AuthOauth2(auth_config)
-            if auth_config['type'] == 'access_token':
+            elif auth_config['type'] == 'access_token':
                 self.current_auth = AuthAccessToken(auth_config)
-            if auth_config['type'] == 'api_key':
+            elif auth_config['type'] == 'api_key':
                 self.current_auth = AuthAPIKey(auth_config)
+            else:
+                self.current_auth = AuthNone()
+        # Requests parameters that will be used for authentication
         self.current_auth.request_parameters(server.host, server.port)
     
     def make_request(self, server, interaction, url_parameters):
+        """ Makes a request using the loaded server """
         return self.current_auth.make_request(  server, 
                                                 interaction, 
                                                 url_parameters )
 
-# In case this could be useful
+# Just in case 
 class Authentication:
     def __init__(self, auth_config):
         pass
 
+# TODO: The way those classes are organized could be improved, for instance
+# bringing together no auth and auth with an API Key.
 
 class AuthNone(Authentication):
+    """ The class for services requiring no authentication """
     def __init__(self):
         pass
 
@@ -69,7 +78,7 @@ class AuthNone(Authentication):
  
 
 class AuthAccessToken(Authentication):
-
+    """ The class for services that require an access token """
     def __init__(self, auth_config):
         # TODO: validation
         self.url = auth_config["url"]
@@ -87,7 +96,7 @@ class AuthAccessToken(Authentication):
         http_response = r.read()
         c.close()
         try:
-            # TODO The '=' is hardcoded, should it be different?
+            # TODO The '=' is hardcoded, it is a bit dangerous
             auth_url_parameters = dict(http_response.split('='))
         except ValueError as detail:
             logging.error(  "Unexpected authentication response: \n" +
@@ -114,6 +123,7 @@ class AuthAccessToken(Authentication):
  
 
 class AuthOauth2(Authentication):
+    """ The class for services requiring oauth2 authentication """
 
     def __init__(self, auth_config):
         self.consumer_key = auth_config["consumer_key"]
@@ -158,19 +168,6 @@ class AuthOauth2(Authentication):
         consumer = oauth.Consumer(  key=self.consumer_key,
                                     secret=self.consumer_secret )
         url_parameters = urllib.urlencode(url_parameters)
-#        oauth_params = {
-#            'oauth_version': "1.0",
-#            'oauth_nonce': oauth.generate_nonce(),
-#            'oauth_timestamp': int(time.time()),
-#            'oauth_token': token.key,
-#            'oauth_consumer_key': consumer.key
-#        }
-#        params = parameters.update(oauth_params)
-#        req = oauth.Request(method="GET", url=url, parameters=params)
-#        signature_method = oauth.SignatureMethod_HMAC_SHA1()
-#        req.sign_request(signature_method, consumer, token)
-#        # return response
-#        test = 'http://api.foursquare.com/v1/test.json'
         client = oauth.Client(consumer, token)
         headers, content = client.request( \
             req_url, \
@@ -180,6 +177,7 @@ class AuthOauth2(Authentication):
 
 
 class AuthAPIKey(Authentication):
+    """ The class for services requiring an API Key in the URL parameters """
 
     def __init__(self, auth_config):
         # TODO: validation

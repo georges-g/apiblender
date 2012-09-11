@@ -6,13 +6,12 @@ import os
 import json
 from collections import defaultdict
 
+# TODO: All the configuration files and the parameters formats could be
+# checked against schemas.
 
 class Server:
-
+    """ A server is the access-point to a service """
     def __init__(self, server_config):
-        #
-        # TODO: validation
-        #
         self.name = server_config["name"]
         self.host = server_config["host"]
         self.port = server_config["port"]
@@ -27,20 +26,18 @@ class Server:
 
 
 class Policy:
-
+    """ The policy parameters """
     def __init__(self, policy_config):
-        # TODO: validation
         self.requests_per_hour = policy_config["requests_per_hour"]
-        self.too_many_calls_response_code = \
-                policy_config["too_many_calls_response_code"]
+        self.too_many_calls_response_status = \
+                policy_config["too_many_calls_response_status"]
         self.too_many_calls_waiting_seconds = \
                 policy_config["too_many_calls_waiting_seconds"]
 
 
 class Interaction:
-
+    """ The parameters for a specific interaction with a server  """
     def __init__(self, interaction_config):
-        # TODO: validation
         self.name = interaction_config["name"]
         self.request = Request(interaction_config["request"])
         self.response = Response(interaction_config["response"])
@@ -51,9 +48,8 @@ class Interaction:
 
 
 class Request:
-    
+    """ A request is what is sent to a server """
     def __init__(self, request_config):
-        # TODO: validation
         self.url_root_path = request_config["url_root_path"]
         self.method = request_config["method"]
         if "raw_content" in request_config.keys():
@@ -69,7 +65,7 @@ class Request:
             if url_param_to_set[0] == url_param.key:
                 url_param.update_url_param(url_param_to_set)
                 return
-        # Small trick to create a new one if needed
+        # Trick to create a new one if needed
         url_param_config = [url_param_to_set[0], 
                             None, 
                             None, 
@@ -92,7 +88,7 @@ class Request:
 
 
 class URLParameter:
-
+    """ Parameters of the request can be specified in the URL """
     def __init__(self, url_param):
         self.key = url_param[0]
         self.value_type = url_param[1]
@@ -100,7 +96,6 @@ class URLParameter:
         self.value = url_param[3]
 
     def update_url_param(self, url_param_to_set):
-        #TODO: check param
         self.key = url_param_to_set[0]
         self.value = url_param_to_set[1]
 
@@ -118,15 +113,13 @@ class URLParameter:
                     'value': self.value             }
 
 class Response:
-
+    """ The response is what is received from the server """
     def __init__(self, response_config):
-        # TODO: validation
-        if "expected_status_code" in response_config.keys():
-            self.expected_status_code = response_config["expected_status_code"]
+        if "expected_status" in response_config.keys():
+            self.expected_status = response_config["expected_status"]
         else:
-            self.expected_status_code = 200
+            self.expected_status = 200
         if response_config["serialization_format"] in ["JSON", "XML"]:
             self.serialization_format = response_config["serialization_format"]
         else:
-            # TODO: manage exception
             raise Exception
