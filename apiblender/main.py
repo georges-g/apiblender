@@ -126,6 +126,7 @@ class Blender:
             "interaction": self.interaction.name,
             "parameters": [url_param.convert_to_dict() for url_param in\
                         self.interaction.request.url_params],
+            "request_url": self.auth_manager.current_auth.current_request_url
         }
         data = {    "blender_config": blender_config,
                     "timestamp": str(datetime.datetime.now()),

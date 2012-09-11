@@ -10,6 +10,7 @@ import oauth2 as oauth
 
 AUTH_PATH = os.path.dirname(__file__) + '/config/apis/auth/'
 
+# TODO: Auth config could be checked against a schema
 
 class AuthManager:
 
@@ -49,13 +50,14 @@ class Authentication:
     def __init__(self, auth_config):
         pass
 
+
 # TODO: The way those classes are organized could be improved, for instance
 # bringing together no auth and auth with an API Key.
 
 class AuthNone(Authentication):
     """ The class for services requiring no authentication """
     def __init__(self):
-        pass
+        self.current_request_url = None
 
     def request_parameters(self, host, port):
         pass
@@ -66,8 +68,9 @@ class AuthNone(Authentication):
                                     timeout = 10 )
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        logging.info("Request: %s:%s%s" % \
-                    (server.host, server.port, total_path))
+        self.current_request_url = "%s:%s%s" % \
+                    (server.host, server.port, total_path)
+        logging.info("Request: %s" (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         headers = dict((x,y) for x,y in response.getheaders())
@@ -80,7 +83,7 @@ class AuthNone(Authentication):
 class AuthAccessToken(Authentication):
     """ The class for services that require an access token """
     def __init__(self, auth_config):
-        # TODO: validation
+        self.current_request_url = None
         self.url = auth_config["url"]
         self.url_parameters = auth_config["url_parameters"]
         if "port" in auth_config.keys():
@@ -91,6 +94,9 @@ class AuthAccessToken(Authentication):
     def request_parameters(self, host):
         c = httplib.HTTPSConnection(host, self.port, timeout = 10)
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
+        self.current_request_url = "%s:%s%s" % \
+                    (host, self.port, total_path)
+        logging.info("Request: %s" (self.current_request_url))
         c.request('GET', total_path)
         r = c.getresponse()
         http_response = r.read()
@@ -112,7 +118,9 @@ class AuthAccessToken(Authentication):
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        logging.info("Request: %s%s" % (server.host, total_path))
+        self.current_request_url = "%s:%s%s" % \
+                    (server.host, server.port, total_path)
+        logging.info("Request: %s" (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
@@ -126,6 +134,7 @@ class AuthOauth2(Authentication):
     """ The class for services requiring oauth2 authentication """
 
     def __init__(self, auth_config):
+        self.current_request_url = None
         self.consumer_key = auth_config["consumer_key"]
         self.consumer_secret = auth_config["consumer_secret"]
         self.request_token_url = auth_config["request_token_url"]
@@ -169,9 +178,12 @@ class AuthOauth2(Authentication):
                                     secret=self.consumer_secret )
         url_parameters = urllib.urlencode(url_parameters)
         client = oauth.Client(consumer, token)
+        self.current_request_url = "%s:%s%s" % \
+                    (server.host, server.port, url_parameters)
+        logging.info("Request: %s" (self.current_request_url))
         headers, content = client.request( \
             req_url, \
-            "GET",\
+            interaction.request.method,\
             url_parameters )
         return content, headers
 
@@ -180,7 +192,7 @@ class AuthAPIKey(Authentication):
     """ The class for services requiring an API Key in the URL parameters """
 
     def __init__(self, auth_config):
-        # TODO: validation
+        self.current_request_url = None
         self.auth_url_parameters = auth_config["url_parameters"]
         if 'https' in auth_config.keys():
             self.https = auth_config["https"]
@@ -206,7 +218,9 @@ class AuthAPIKey(Authentication):
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        logging.info("Request: %s%s" % (server.host, total_path))
+        self.current_request_url = "%s:%s%s" % \
+                    (server.host, server.port, total_path)
+        logging.info("Request: %s" (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
