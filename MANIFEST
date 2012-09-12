@@ -2,6 +2,7 @@
 setup.py
 apiblender/__init__.py
 apiblender/auth.py
+apiblender/config.py
 apiblender/main.py
 apiblender/policy.py
 apiblender/serverclasses.py

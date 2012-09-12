@@ -8,9 +8,13 @@ import logging
 
 import oauth2 as oauth
 
-AUTH_PATH = os.path.join(os.path.dirname(__file__), 'config', 'apis', 'auth')
+import config
 
-# TODO: Auth config could be checked against a schema
+logger = logging.getLogger('apiblender')
+
+#
+# Idea: Auth config files could be checked against schemas
+# 
 
 class AuthManager:
 
@@ -20,7 +24,8 @@ class AuthManager:
     def load_server(self, server):
         """ Loads a server looking at his auth config file """
         # Loads the config file
-        auth_config_file = os.path.join(AUTH_PATH, server.name + '.json')
+        auth_config_file = os.path.join(    config.auth_folder_path, 
+                                            server.name + '.json' )
         # If no config file, then no authentication
         if not os.path.exists(auth_config_file):
             self.current_auth = AuthNone()
@@ -70,7 +75,7 @@ class AuthNone(Authentication):
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logging.info("Request: %s" % (self.current_request_url))
+        logger.info("Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         headers = dict((x,y) for x,y in response.getheaders())
@@ -96,7 +101,7 @@ class AuthAccessToken(Authentication):
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
         self.current_request_url = "%s:%s%s" % \
                     (host, self.port, total_path)
-        logging.info("Request: %s" % (self.current_request_url))
+        logger.info("Request: %s" % (self.current_request_url))
         c.request('GET', total_path)
         r = c.getresponse()
         http_response = r.read()
@@ -105,7 +110,7 @@ class AuthAccessToken(Authentication):
             # TODO The '=' is hardcoded, it is a bit dangerous
             auth_url_parameters = dict(http_response.split('='))
         except ValueError as detail:
-            logging.error(  "Unexpected authentication response: \n" +
+            logger.error(  "Unexpected authentication response: \n" +
                             detail + "\nCannot use authentication")
             return
         self.auth_url_parameters = auth_url_parameters 
@@ -120,7 +125,7 @@ class AuthAccessToken(Authentication):
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logging.info("Request: %s" % (self.current_request_url))
+        logger.info("Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
@@ -180,7 +185,7 @@ class AuthOauth2(Authentication):
         client = oauth.Client(consumer, token)
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, url_parameters)
-        logging.info("Request: %s" % (self.current_request_url))
+        logger.info("Request: %s" % (self.current_request_url))
         headers, content = client.request( \
             req_url, \
             interaction.request.method,\
@@ -220,7 +225,7 @@ class AuthAPIKey(Authentication):
                                  urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logging.info("Request: %s" % (self.current_request_url))
+        logger.info("Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()

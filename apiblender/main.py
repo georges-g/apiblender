@@ -8,14 +8,13 @@ import logging
 import datetime
 
 import xmltodict
+
+import config
 import serverclasses
 import policy
 import auth
 
-GENERAL_CONFIG = os.path.join(   os.path.dirname(__file__), 
-                                "config", 
-                                "general.json"  )
-APIS_PATH = os.path.join(os.path.dirname(__file__), 'config', 'apis')
+logger = logging.getLogger('apiblender')
 
 class Blender:
     """A Blender allows you to make a request after you load a server and an
@@ -34,23 +33,24 @@ class Blender:
 
     def load_config_file(self):
         """ Loads the config file (general.json) """
-        if not os.path.exists(GENERAL_CONFIG):
-            sys.exit('ERROR: File %s was not found!' % GENERAL_CONFIG)
-        with open(GENERAL_CONFIG, 'r') as config_file:
+        if not os.path.exists(config.general_json_path):
+            sys.exit('ERROR: File %s was not found!' % config.general_json_path)
+        with open(config.general_json_path, 'r') as config_file:
             general_config = json.load(config_file)
         self.user_agent = general_config["user-agent"]
         
     def list_servers(self):
         """Lists available servers from the config/apis directory """
-        for filename in os.listdir(APIS_PATH):
+        for filename in os.listdir(config.apis_folder_path):
             if filename.split('.')[-1] == 'json':
                 print filename.split('.json')[0]
 
     def load_server(self, server_name):
         """ Loads a server """
-        server_config_path = os.path.join(APIS_PATH, server_name+'.json')
+        server_config_path = os.path.join(  config.apis_folder_path, 
+                                            server_name + '.json' )
         if not os.path.exists(server_config_path):
-            logging.error('File %s was not found.' % server_config_path)
+            logger.error('File %s was not found.' % server_config_path)
             self.server = None
         else:
             with open(server_config_path, 'r') as server_config_file:
@@ -67,7 +67,7 @@ class Blender:
     def load_interaction(self, interaction_name):
         """ Loads an interaction """
         if not self.server:
-            logging.error('Loading %s: no server loaded.' % interaction_name)
+            logger.error('Loading %s: no server loaded.' % interaction_name)
             self.interaction = None
             return None
         for avb_interaction in self.server.interactions:
@@ -75,7 +75,7 @@ class Blender:
                 self.interaction = avb_interaction
                 return
         else:
-            logging.error('Loading %s: not found on server %s.'\
+            logger.error('Loading %s: not found on server %s.'\
                     % (interaction_name, self.server.name))
             self.interaction = None
             return None
@@ -88,7 +88,7 @@ class Blender:
     def set_url_params(self, url_params_to_set):
         """ Sets URL parameters, { key1: value1, key2: value2 } """
         if not self.interaction:
-            logging.error('Setting url_params: no interaction loaded.')
+            logger.error('Setting url_params: no interaction loaded.')
             return None
         for k, v in url_params_to_set.iteritems():
             self.interaction.request.set_url_param([k,v])
@@ -98,7 +98,7 @@ class Blender:
         hoc but it works """
         # Testing if an interaction is properly loaded
         if not self.interaction:
-            logging.error('Blending: no interaction loaded.')
+            logger.error('Blending: no interaction loaded.')
             return None
         # Retries to make a request three times
         request_not_made = True
@@ -110,11 +110,11 @@ class Blender:
             except Exception:
                 i+=1
         if request_not_made:
-            logging.error("Could not make request \n" + \
+            logger.error("Could not make request \n" + \
                 "Server: %s Interaction: %s" %\
                 (self.server.name, self.interaction.name))
             for url_param in self.interaction.request.url_params:
-                logging.error("Parameter: %s" % (url_param))
+                logger.error("Parameter: %s" % (url_param))
             return None
         # Check the status of the response
         successful_interaction = self.check_status(headers['status'])
@@ -134,7 +134,7 @@ class Blender:
                     "loaded_content": loaded_content,
                     "headers": headers,
                     "successful_interaction": successful_interaction}
-        logging.info("\tStatus: %s" % (headers['status']) + "\n" + \
+        logger.info("\tStatus: %s" % (headers['status']) + "\n" + \
                      "\tData: %s" % (str(loaded_content)[0:70]))
         return data 
 
@@ -144,7 +144,7 @@ class Blender:
         # Checking if the policy manager is OK with making a request
         if not self.policy_manager.get_request_permission(self.server):
             sleeping_time = self.policy_manager.get_sleeping_time(self.server)
-            logging.warning("Sleeping for: %s seconds" % (sleeping_time))
+            logger.warning("Sleeping for: %s seconds" % (sleeping_time))
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
         # Get the URL parameters

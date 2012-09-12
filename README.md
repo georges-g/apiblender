@@ -60,6 +60,17 @@ result['headers']
 result['successful_interaction']    # Boolean
 ```
 
+Logging
+-------
+
+The APIBlender logs everything is a logger called 'apiblender'. You can use
+it typically with:
+
+```python
+import logging
+apiblender_log = logging.getLogger('apiblender')
+```
+
 License
 -------
 Copyright (C) 2011  Georges GOURITEN (georges.gouriten-at-gmail-dot-com)

@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime
 
+logger = logging.getLogger('apiblender')
+
 class PolicyManager:
     """ Limit request when needed """
     # 
@@ -24,7 +26,7 @@ class PolicyManager:
         self.servers_status[server.name]["request_count"] += 1
     
     def signal_too_many_calls(self, server):
-        logging.warning("Too many calls for %s" % server.name)
+        logger.warning("Too many calls for %s" % server.name)
         # Blender goes to sleep
         self.servers_status[server.name]["sleeping_state"] = True
         if not self.servers_status[server.name]["sleeping_since"]:
@@ -32,7 +34,7 @@ class PolicyManager:
 
     def signal_wrong_response_status(self, server, status):
         #TODO: Something else could happen with the wrong status
-        logging.warning(    "Wrong response status:%s for %s" % \
+        logger.warning(    "Wrong response status:%s for %s" % \
                             (status, server.name) )
 
     def get_server_request_count(self, server):
