@@ -13,7 +13,7 @@ def get_some_pics_and_comments(target_blender, keyword):
         target_blender.set_url_params({"tags": keyword, "page": p})
         photos_data = target_blender.blend()
         ids = set()
-        for photo in photos_data['prepared_content']['photos']['photo']:
+        for photo in photos_data['loaded_content']['photos']['photo']:
             ids.add(photo['id'])
         for _id in ids:
             target_blender.load_interaction("photo_comments")
