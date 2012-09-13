@@ -75,7 +75,7 @@ class AuthNone(Authentication):
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logger.info("Request: %s" % (self.current_request_url))
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         headers = dict((x,y) for x,y in response.getheaders())
@@ -101,7 +101,7 @@ class AuthAccessToken(Authentication):
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
         self.current_request_url = "%s:%s%s" % \
                     (host, self.port, total_path)
-        logger.info("Request: %s" % (self.current_request_url))
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request('GET', total_path)
         r = c.getresponse()
         http_response = r.read()
@@ -125,7 +125,7 @@ class AuthAccessToken(Authentication):
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logger.info("Request: %s" % (self.current_request_url))
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()
@@ -185,7 +185,7 @@ class AuthOauth2(Authentication):
         client = oauth.Client(consumer, token)
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, url_parameters)
-        logger.info("Request: %s" % (self.current_request_url))
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
         headers, content = client.request( \
             req_url, \
             interaction.request.method,\
@@ -225,7 +225,7 @@ class AuthAPIKey(Authentication):
                                  urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
                     (server.host, server.port, total_path)
-        logger.info("Request: %s" % (self.current_request_url))
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
         content = response.read()

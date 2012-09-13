@@ -99,44 +99,62 @@ class Blender:
         # Testing if an interaction is properly loaded
         if not self.interaction:
             logger.error('Blending: no interaction loaded.')
-            return None
+            return self.make_blender_response(
+                    blender_config='error, no interaction loaded')
         # Retries to make a request three times
         request_not_made = True
         i = 0
         while request_not_made and i<3:
             try:
-                content, headers = self.make_request()
+                _content, _headers = self.make_request()
                 request_not_made = False
             except Exception:
                 i+=1
-        if request_not_made:
-            logger.error("Could not make request \n" + \
-                "Server: %s Interaction: %s" %\
-                (self.server.name, self.interaction.name))
-            for url_param in self.interaction.request.url_params:
-                logger.error("Parameter: %s" % (url_param))
-            return None
-        # Check the status of the response
-        successful_interaction = self.check_status(headers['status'])
-        # Loads the content
-        loaded_content = self.load_content(content)
-        # Define the object the blender returns
-        blender_config = {  
+        # Defines the blender_config
+        _blender_config = {  
             "server": self.server.name,
             "interaction": self.interaction.name,
             "parameters": [url_param.convert_to_dict() for url_param in\
                         self.interaction.request.url_params],
             "request_url": self.auth_manager.current_auth.current_request_url
         }
-        data = {    "blender_config": blender_config,
+        # If the request failed
+        if request_not_made:
+            logger.error("[No reach] Request: %s" %
+                    (self.auth_manager.current_auth.current_request_url))
+            return self.make_blender_response(blender_config=_blender_config)
+        # Check the status of the response
+        _successful_interaction = self.check_status(_headers['status'])
+        # Loads the content
+        _loaded_content = self.load_content(_content)
+        if _successful_interaction and _content:
+            logger.info("[Success] Request: %s" %
+            (self.auth_manager.current_auth.current_request_url))
+        elif _successful_interaction and not _content:
+            logger.warning("[Success but empty content] Request: %s" %
+            (self.auth_manager.current_auth.current_request_url))
+        else:
+            logger.warning("[Failure] Request: %s" %
+            (self.auth_manager.current_auth.current_request_url))
+        return self.make_blender_response(
+                    blender_config=_blender_config,
+                    successful_interaction=_successful_interaction,
+                    raw_content=_content, 
+                    loaded_content=_loaded_content,
+                    headers=_headers
+                )
+
+    def make_blender_response(  self, blender_config, successful_interaction=False,
+                                raw_content=None, loaded_content=None, headers=None):
+        blender_response = {    
+                    "blender_config": blender_config,
+                    "successful_interaction": successful_interaction,
                     "timestamp": str(datetime.datetime.now()),
-                    "raw_content": content,
+                    "raw_content": raw_content,
                     "loaded_content": loaded_content,
-                    "headers": headers,
-                    "successful_interaction": successful_interaction}
-        logger.info("\tStatus: %s" % (headers['status']) + "\n" + \
-                     "\tData: %s" % (str(loaded_content)[0:70]))
-        return data 
+                    "headers": headers
+        }
+        return blender_response
 
     def make_request(self):
         """ Called by blend(), it deals with effectively making the
@@ -144,7 +162,7 @@ class Blender:
         # Checking if the policy manager is OK with making a request
         if not self.policy_manager.get_request_permission(self.server):
             sleeping_time = self.policy_manager.get_sleeping_time(self.server)
-            logger.warning("Sleeping for: %s seconds" % (sleeping_time))
+            logger.warning("Blender sleeping for: %s seconds" % (sleeping_time))
             time.sleep(sleeping_time)
             self.policy_manager.reset_server_sleep(self.server)
         # Get the URL parameters
