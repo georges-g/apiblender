@@ -4,6 +4,7 @@ import main
 # would be a good idea.
 
 configs_to_test = [
+    ['facebook', 'user', 'ids', '7901103'],
     ['facebook', 'search', 'q', 'hollande'],
     ['flickr', 'photos_search', 'tags', 'hollande'],
     ['google_plus', 'activities_search', 'query', 'hollande'],

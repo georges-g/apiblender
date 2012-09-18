@@ -23,6 +23,21 @@
 				"expected_status": 200,
 				"serialization_format": "JSON"
 			}
+		},
+        {
+			"name": "user",
+			"description": "get a user or a page from its username or id",
+			"request": {
+				"url_root_path": "/",
+				"method": "GET",
+				"url_params": [
+                    [ "ids", "string", false, null ]
+                ]
+			},
+			"response": {
+				"expected_status": 200,
+				"serialization_format": "JSON"
+			}
 		}
 	]
 }
