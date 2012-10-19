@@ -156,8 +156,6 @@ class AuthOauth2(Authentication):
         client = oauth.Client(consumer)
         # Getting the request token
         resp, content = client.request(self.request_token_url, "GET")
-        if resp['status'] != '200':
-                raise Exception("Invalid response %s." % resp['status'])
         request_token = dict(urlparse.parse_qsl(content))
         # Ask confirmation from the user.
         print   "Go to the following link in your browser: \n" + \

@@ -179,11 +179,14 @@ class Blender:
     def check_status(self, status):
         """ Checks the response status and signals problems if needed """
         # TODO: checking response.read could be added
+        logger.debug('status: %s, expected status: %s' % (
+            status, self.interaction.response.expected_status))
         if not status:
             return False
-        elif status == self.interaction.response.expected_status:
+        elif int(status) == int(self.interaction.response.expected_status):
             return True
-        elif status == self.server.policy.too_many_calls_response_status:
+        elif int(status) == \
+                int(self.server.policy.too_many_calls_response_status):
             self.policy_manager.signal_too_many_calls(self.server)
             return False
         else:

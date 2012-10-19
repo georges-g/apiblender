@@ -1,7 +1,16 @@
+import logging
+
 import main
 
 # TODO: tests are very basic at the moment, move the project into more TDD
 # would be a good idea.
+
+blender = main.Blender()
+
+apiblender_logger = logging.getLogger('apiblender')
+apiblender_logger.setLevel(logging.DEBUG)
+apiblender_file_handler = logging.FileHandler('test_main.log')
+apiblender_logger.addHandler(apiblender_file_handler)
 
 configs_to_test = [
     ['twitter-generic', 'user_timeline', 'user_id', '73378083'],
@@ -14,7 +23,6 @@ configs_to_test = [
     ['youtube', 'search', 'q', 'hollande']
 ]
 
-blender = main.Blender()
 
 for config in configs_to_test:
     blender.load_server(config[0])
