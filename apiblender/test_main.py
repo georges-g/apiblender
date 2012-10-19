@@ -4,6 +4,7 @@ import main
 # would be a good idea.
 
 configs_to_test = [
+    ['twitter-generic', 'user_timeline', 'user_id', '73378083'],
     ['facebook', 'user', 'ids', '7901103'],
     ['facebook', 'search', 'q', 'hollande'],
     ['flickr', 'photos_search', 'tags', 'hollande'],

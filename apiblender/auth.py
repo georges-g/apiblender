@@ -150,7 +150,8 @@ class AuthOauth2(Authentication):
         else:
             self.port = 443
 
-    def request_parameters(self, host):
+    def request_parameters(self, host, port):
+        # TODO: port is not used
         consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
         client = oauth.Client(consumer)
         # Getting the request token

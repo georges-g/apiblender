@@ -1,5 +1,5 @@
 {
-    "name": "twitter-general",
+    "name": "twitter-generic",
     "host": "api.twitter.com",
     "port": 80,
     "policy": {
@@ -55,6 +55,24 @@
                     [ "screen_name", "string", true, null ],
                     [ "cursor", "string", true, -1 ],
                     [ "stringify_ids", "boolean", true, false ]
+                ]
+            },
+            "response": {
+                "expected_status": 200,
+                "serialization_format": "JSON"
+            }
+        },
+        {
+            "name": "user_timeline",
+            "description": "Most recent statuses posted by the authenticating user or another user by using the screen_name or user_id parameter.",
+            "request": {
+                "url_root_path": "/1/statuses/user_timeline.json",
+                "method": "GET",
+                "url_params": [
+                    [ "user_id", "string", true, null ],
+                    [ "count", "int", true, 200 ],
+                    [ "include_rts", "boolean", true, "true" ],
+                    [ "contributor_details", "boolean", true, "true" ]
                 ]
             },
             "response": {
