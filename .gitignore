@@ -3,3 +3,4 @@
 .gitignore
 todo
 build/
+*.log

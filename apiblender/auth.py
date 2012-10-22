@@ -26,6 +26,7 @@ class AuthManager:
         # Loads the config file
         auth_config_file = os.path.join(    config.auth_folder_path, 
                                             server.name + '.json' )
+        auth_config = {}
         # If no config file, then no authentication
         if not os.path.exists(auth_config_file):
             self.current_auth = AuthNone()
@@ -41,7 +42,10 @@ class AuthManager:
                 self.current_auth = AuthAPIKey(auth_config)
             else:
                 self.current_auth = AuthNone()
-        # Requests parameters that will be used for authentication
+        # Change server's port if needed
+        if "port" in auth_config.keys():
+            server.port = auth_config["port"]
+        # Request parameters that will be used for authentication
         self.current_auth.request_parameters(server.host, server.port)
     
     def make_request(self, server, interaction, url_parameters):
@@ -91,16 +95,12 @@ class AuthAccessToken(Authentication):
         self.current_request_url = None
         self.url = auth_config["url"]
         self.url_parameters = auth_config["url_parameters"]
-        if "port" in auth_config.keys():
-            self.port = auth_config["port"]
-        else:
-            self.port = 443
 
-    def request_parameters(self, host):
-        c = httplib.HTTPSConnection(host, self.port, timeout = 10)
+    def request_parameters(self, host, port):
+        c = httplib.HTTPSConnection(host, port, timeout = 10)
         total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
         self.current_request_url = "%s:%s%s" % \
-                    (host, self.port, total_path)
+                    (host, port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request('GET', total_path)
         r = c.getresponse()
@@ -118,8 +118,8 @@ class AuthAccessToken(Authentication):
 
     def make_request(self, server, interaction, url_parameters):
         c = httplib.HTTPSConnection( server.host, 
-                                    self.port,
-                                    timeout = 10 )
+                                     server.port,
+                                     timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
@@ -145,10 +145,6 @@ class AuthOauth2(Authentication):
         self.request_token_url = auth_config["request_token_url"]
         self.access_token_url = auth_config["access_token_url"]
         self.authorize_url = auth_config["authorize_url"]
-        if "port" in auth_config.keys():
-            self.port = auth_config["port"]
-        else:
-            self.port = 443
 
     def request_parameters(self, host, port):
         # TODO: port is not used
@@ -174,21 +170,20 @@ class AuthOauth2(Authentication):
         print "Authentication successful"
 
     def make_request(self, server, interaction, url_parameters):
-        req_url = "https://%s%s" % (server.host, \
-                                    interaction.request.url_root_path)
+        url_parameters = urllib.urlencode(url_parameters)
+        self.current_request_url = "https://%s:%s%s?%s" % \
+            ( server.host, server.port,
+              interaction.request.url_root_path, url_parameters )
         token = oauth.Token(    key=self.access_token['oauth_token'], 
                                 secret=self.access_token['oauth_token_secret'])
         consumer = oauth.Consumer(  key=self.consumer_key,
                                     secret=self.consumer_secret )
-        url_parameters = urllib.urlencode(url_parameters)
         client = oauth.Client(consumer, token)
-        self.current_request_url = "%s:%s%s" % \
-                    (server.host, server.port, url_parameters)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         headers, content = client.request( \
-            req_url, \
-            interaction.request.method,\
-            url_parameters )
+            self.current_request_url, \
+            method=interaction.request.method,\
+        )
         return content, headers
 
 
@@ -202,10 +197,6 @@ class AuthAPIKey(Authentication):
             self.https = auth_config["https"]
         else:
             self.https = false
-        if "port" in auth_config.keys():
-            self.port = auth_config["port"]
-        else:
-            self.port = 443
 
     def request_parameters(self, host, port):
         pass
@@ -213,11 +204,11 @@ class AuthAPIKey(Authentication):
     def make_request(self, server, interaction, url_parameters):
         if self.https:
             c = httplib.HTTPSConnection( server.host, 
-                                         self.port,
+                                         server.port,
                                          timeout = 10 )
         else:
             c = httplib.HTTPConnection( server.host, 
-                                        self.port,
+                                        server.port,
                                         timeout = 10 )
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % ( interaction.request.url_root_path, 
