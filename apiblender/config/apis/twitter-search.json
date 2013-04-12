@@ -3,7 +3,8 @@
     "host": "search.twitter.com",
     "port": 80,
     "policy": {
-        "requests_per_hour": 400,
+        "requests_per_period": 400,
+        "period": 3600,
         "too_many_calls_response_status": 420,
         "too_many_calls_waiting_seconds": 300
     },
