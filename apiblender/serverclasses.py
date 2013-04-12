@@ -28,7 +28,8 @@ class Server:
 class Policy:
     """ The policy parameters """
     def __init__(self, policy_config):
-        self.requests_per_hour = policy_config["requests_per_hour"]
+        self.requests_per_period = policy_config["requests_per_period"]
+        self.period = policy_config["period"]
         self.too_many_calls_response_status = \
                 policy_config["too_many_calls_response_status"]
         self.too_many_calls_waiting_seconds = \
