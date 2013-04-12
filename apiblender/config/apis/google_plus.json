@@ -1,7 +1,7 @@
 {
     "name": "google_plus",
     "host": "www.googleapis.com",
-    "port": 80,
+    "port": 443,
     "policy": {
         "requests_per_period": 3600,
         "period": 3600,
