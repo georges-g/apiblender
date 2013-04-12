@@ -73,9 +73,14 @@ class AuthNone(Authentication):
         pass
 
     def make_request(self, server, interaction, url_parameters):
-        c = httplib.HTTPConnection( server.host, 
-                                    server.port,
-                                    timeout = 10 )
+        if server.port==443:
+              c = httplib.HTTPSConnection(server.host, 
+                                          server.port,
+                                          timeout = 10 )
+        else:
+              c = httplib.HTTPConnection( server.host, 
+                                          server.port,
+                                          timeout = 10 )
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s:%s%s" % \
