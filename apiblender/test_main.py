@@ -13,13 +13,14 @@ apiblender_file_handler = logging.FileHandler('test_main.log')
 apiblender_logger.addHandler(apiblender_file_handler)
 
 configs_to_test = [
-    ['twitter-generic', 'user_timeline', 'user_id', '73378083'],
+    ['google_plus', 'activities_search', 'query', 'hollande'],
     ['facebook', 'user', 'ids', '7901103'],
     ['facebook', 'search', 'q', 'hollande'],
     ['flickr', 'photos_search', 'tags', 'hollande'],
-    ['google_plus', 'activities_search', 'query', 'hollande'],
+    ['twitter-generic', 'user_timeline', 'user_id', '73378083'],
     ['twitter-generic', 'followers', 'screen_name', 'netiru'],
     ['twitter-search', 'search', 'q', 'hollande'],
+    ['twitter-1.1', 'search', 'q', 'hollande'],
     ['youtube', 'search', 'q', 'hollande']
 ]
 
