@@ -1,5 +1,5 @@
 {
-    "name": "twitter-search-1.1",
+    "name": "twitter-1.1",
     "host": "api.twitter.com",
     "port": 443,
     "policy": {
