@@ -1,10 +1,10 @@
 {
-    "type": "oauth",
-    "consumer_key": "k6XBvoPwxuYrfNep9xYRBQ",
-    "consumer_secret": "",
-    "request_token_url": "https://api.twitter.com/oauth/request_token",
-    "access_token_url": "http://api.twitter.com/oauth/access_token",
-    "authorize_url": "http://api.twitter.com/oauth/authorize",
-    "https": true,
-    "port": 443
+    "type": "access_token",
+    "path": "/oauth2/token",
+    "method": "POST",
+    "login": "",
+    "password": "",
+    "parameters": {
+      "grant_type": "client_credentials"
+    }
 }
