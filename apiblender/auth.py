@@ -5,6 +5,7 @@ import urlparse
 import httplib
 import urllib
 import logging
+import base64
 
 import oauth2 as oauth
 
@@ -93,28 +94,46 @@ class AuthAccessToken(Authentication):
     """ The class for services that require an access token """
     def __init__(self, auth_config):
         self.current_request_url = None
-        self.url = auth_config["url"]
-        self.url_parameters = auth_config["url_parameters"]
+        self.path = auth_config["path"]
+        self.parameters = auth_config["parameters"]
+        self.password = auth_config["password"]
+        self.login = auth_config["login"]
+        self.method = auth_config["method"]
+        if self.method == None:
+          self.method="GET"
 
     def request_parameters(self, host, port):
         c = httplib.HTTPSConnection(host, port, timeout = 10)
-        total_path = "%s?%s" % (self.url,urllib.urlencode(self.url_parameters))
+        if self.method == "GET":
+            total_path = "%s?%s" % (self.path,urllib.urlencode(self.parameters))
+            body = None
+        else:
+            total_path = self.path
+            body = urllib.urlencode(self.parameters)
         self.current_request_url = "%s:%s%s" % \
                     (host, port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
-        c.request('GET', total_path)
+        headers = {}
+        if(self.login != None):
+          headers["Authorization"] = "Basic "+base64.b64encode(self.login+":"+self.password)
+        c.request(self.method, total_path, body, headers)
         r = c.getresponse()
         http_response = r.read()
-        c.close()
         try:
-            # TODO The '=' is hardcoded, it is a bit dangerous
-            auth_url_parameters = dict(http_response.split('='))
+            if r.getheader("Content-Type").startswith("application/json"):
+                auth_url_parameters = json.loads(http_response)
+            else:
+                # TODO The '=' is hardcoded, it is a bit dangerous
+                auth_url_parameters = dict(http_response.split('='))
         except ValueError as detail:
             logger.error(  "Unexpected authentication response: \n" +
-                            detail + "\nCannot use authentication")
-            return
+                            str(detail) + "\nCannot use authentication")
+        for key in auth_url_parameters:
+            # Should not be required for JSON, but Twitter encodes it all
+            # the same
+            auth_url_parameters[key]=urllib.unquote(auth_url_parameters[key])
         self.auth_url_parameters = auth_url_parameters 
-
+        c.close()
 
     def make_request(self, server, interaction, url_parameters):
         c = httplib.HTTPSConnection( server.host, 
