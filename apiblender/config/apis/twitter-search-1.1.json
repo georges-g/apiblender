@@ -1,0 +1,30 @@
+{
+    "name": "twitter-search-1.1",
+    "host": "api.twitter.com",
+    "port": 443,
+    "policy": {
+        "requests_per_period": 450,
+        "period": 900,
+        "too_many_calls_response_status": 429,
+        "too_many_calls_waiting_seconds": 300
+    },
+    "interactions": [
+        {
+            "name": "search",
+            "description": "search for tweets, users, hashtags with keywords",
+            "request": {
+                "url_root_path": "/1.1/search/tweets.json",
+                "method": "GET",
+                "url_params": [ 
+                    [ "q", "string", false, null ],
+                    [ "count", "int", true, 100 ], 
+                    [ "include_entities", "boolean", true, true ] 
+                ]
+            },
+            "response": {
+                "expected_status": 200,
+                "serialization_format": "JSON"
+            }
+        }
+    ]
+}
