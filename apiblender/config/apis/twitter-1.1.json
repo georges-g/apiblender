@@ -18,6 +18,7 @@
                 "url_params": [ 
                     [ "q", "string", false, null ],
                     [ "count", "int", true, 100 ], 
+                    [ "max_id", "int", true, null ], 
                     [ "include_entities", "boolean", true, true ] 
                 ]
             },
