@@ -26,6 +26,38 @@
                 "expected_status": 200,
                 "serialization_format": "JSON"
             }
+        },
+        {
+            "name": "followers",
+            "description": "get ids of followers",
+            "request": {
+                "url_root_path": "/1.1/followers/ids.json",
+                "method": "GET",
+                "url_params": [ 
+                    [ "user_id", "int", false, null ],
+                    [ "cursor", "string", true, null ], 
+                    [ "count", "int", true, 5000 ]
+                ]
+            },
+            "response": {
+                "expected_status": 200,
+                "serialization_format": "JSON"
+            }
+        },
+        {
+            "name": "lists",
+            "description": "get lists of a user",
+            "request": {
+                "url_root_path": "/1.1/lists/list.json",
+                "method": "GET",
+                "url_params": [ 
+                    [ "user_id", "int", false, null ]
+                ]
+            },
+            "response": {
+                "expected_status": 200,
+                "serialization_format": "JSON"
+            }
         }
     ]
 }

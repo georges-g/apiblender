@@ -21,6 +21,8 @@ configs_to_test = [
     ['twitter-generic', 'followers', 'screen_name', 'netiru'],
     ['twitter-search', 'search', 'q', 'hollande'],
     ['twitter-1.1', 'search', 'q', 'hollande'],
+    ['twitter-1.1', 'followers', 'user_id', '813286'], # Barack Obama
+    ['twitter-1.1', 'lists', 'user_id', '813286'],     # Barack Obama
     ['youtube', 'search', 'q', 'hollande']
 ]
 
