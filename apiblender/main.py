@@ -124,7 +124,7 @@ class Blender:
                     (self.auth_manager.current_auth.current_request_url))
             return self.make_blender_response(blender_config=_blender_config)
         # Check the status of the response
-        _successful_interaction = self.check_status(_headers['status'])
+        _successful_interaction = self.check_status(_headers)
         # Loads the content
         _loaded_content = self.load_content(_content)
         if _successful_interaction and _content:
@@ -162,9 +162,10 @@ class Blender:
         # Checking if the policy manager is OK with making a request
         if not self.policy_manager.get_request_permission(self.server):
             sleeping_time = self.policy_manager.get_sleeping_time(self.server)
-            logger.warning("Blender sleeping for: %s seconds" % (sleeping_time))
-            time.sleep(sleeping_time)
-            self.policy_manager.reset_server_sleep(self.server)
+            if sleeping_time != 0:
+                logger.warning("Blender sleeping for: %s seconds" % (sleeping_time))
+                time.sleep(sleeping_time)
+                self.policy_manager.reset_server_sleep(self.server)
         # Get the URL parameters
         total_url_params = self.interaction.request.get_total_url_params()
         # Ask the auth_manager to make the request
@@ -176,9 +177,10 @@ class Blender:
         self.policy_manager.signal_server_request(self.server)
         return content, headers
     
-    def check_status(self, status):
+    def check_status(self, headers):
         """ Checks the response status and signals problems if needed """
         # TODO: checking response.read could be added
+        status = headers['status']
         logger.debug('status: %s, expected status: %s' % (
             status, self.interaction.response.expected_status))
         if not status:
@@ -187,7 +189,7 @@ class Blender:
             return True
         elif int(status) == \
                 int(self.server.policy.too_many_calls_response_status):
-            self.policy_manager.signal_too_many_calls(self.server)
+            self.policy_manager.signal_too_many_calls(self.server,headers)
             return False
         else:
             self.policy_manager.signal_wrong_response_status(self.server, 
