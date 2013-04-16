@@ -6,7 +6,7 @@
         "requests_per_period": 450,
         "period": 900,
         "too_many_calls_response_status": 429,
-        "too_many_calls_waiting_seconds": 300
+        "too_many_calls_waiting_seconds": 60
     },
     "interactions": [
         {
