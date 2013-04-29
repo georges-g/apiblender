@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(  name='apiblender',
-        version='0.3',
+        version='0.4',
         description='API Blender allows you to easily interact with many APIs',
         author='Georges Gouriten',
         author_email='georges.gouriten@gmail.com',
