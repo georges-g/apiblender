@@ -77,14 +77,16 @@ class AuthNone(Authentication):
               c = httplib.HTTPSConnection(server.host, 
                                           server.port,
                                           timeout = 10 )
+              scheme = 'https'
         else:
               c = httplib.HTTPConnection( server.host, 
                                           server.port,
                                           timeout = 10 )
+              scheme = 'http'
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        self.current_request_url = "%s:%s%s" % \
-                    (server.host, server.port, total_path)
+        self.current_request_url = "%s://%s:%s%s" % \
+                    (scheme, server.host, server.port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
@@ -115,7 +117,7 @@ class AuthAccessToken(Authentication):
         else:
             total_path = self.path
             body = urllib.urlencode(self.parameters)
-        self.current_request_url = "%s:%s%s" % \
+        self.current_request_url = "https://%s:%s%s" % \
                     (host, port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         headers = {}
@@ -141,14 +143,21 @@ class AuthAccessToken(Authentication):
         c.close()
 
     def make_request(self, server, interaction, url_parameters):
-        c = httplib.HTTPSConnection( server.host, 
-                                     server.port,
-                                     timeout = 10 )
+        if server.port==443:
+              c = httplib.HTTPSConnection(server.host, 
+                                          server.port,
+                                          timeout = 10 )
+              scheme = 'https'
+        else:
+              c = httplib.HTTPConnection( server.host, 
+                                          server.port,
+                                          timeout = 10 )
+              scheme = 'http'
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
-        self.current_request_url = "%s:%s%s" % \
-                    (server.host, server.port, total_path)
+        self.current_request_url = "%s://%s:%s%s" % \
+                    (scheme, server.host, server.port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
@@ -230,15 +239,17 @@ class AuthAPIKey(Authentication):
             c = httplib.HTTPSConnection( server.host, 
                                          server.port,
                                          timeout = 10 )
+            scheme='https'
         else:
             c = httplib.HTTPConnection( server.host, 
                                         server.port,
                                         timeout = 10 )
+            scheme='http'
         url_parameters.update(self.auth_url_parameters)
         total_path = "%s?%s" % ( interaction.request.url_root_path, 
                                  urllib.urlencode(url_parameters) )
-        self.current_request_url = "%s:%s%s" % \
-                    (server.host, server.port, total_path)
+        self.current_request_url = "%s://%s:%s%s" % \
+                    (scheme, server.host, server.port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path)
         response = c.getresponse()
