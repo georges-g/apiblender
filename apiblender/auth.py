@@ -39,6 +39,8 @@ class AuthManager:
                 self.current_auth = AuthOauth2(auth_config)
             elif auth_config['type'] == 'access_token':
                 self.current_auth = AuthAccessToken(auth_config)
+            elif auth_config['type'] == 'access_token_authorization':
+                self.current_auth = AuthAccessTokenAuthorization(auth_config)
             elif auth_config['type'] == 'api_key':
                 self.current_auth = AuthAPIKey(auth_config)
             else:
@@ -167,6 +169,70 @@ class AuthAccessToken(Authentication):
         c.close()
         return content, headers
  
+ 
+class AuthAccessTokenAuthorization(Authentication):
+    """ The class for services that require an access token, that should
+    be passed by an Authorization: Bearer field """
+    def __init__(self, auth_config):
+        self.current_request_url = None
+        self.path = auth_config["path"]
+        self.parameters = auth_config["parameters"]
+        self.password = auth_config["password"]
+        self.login = auth_config["login"]
+        self.method = auth_config["method"]
+        if self.method == None:
+          self.method="GET"
+
+    def request_parameters(self, host, port):
+        c = httplib.HTTPSConnection(host, port, timeout = 10)
+        if self.method == "GET":
+            total_path = "%s?%s" % (self.path,urllib.urlencode(self.parameters))
+            body = None
+        else:
+            total_path = self.path
+            body = urllib.urlencode(self.parameters)
+        self.current_request_url = "https://%s:%s%s" % \
+                    (host, port, total_path)
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
+        headers = {}
+        if(self.login != None):
+          headers["Authorization"] = "Basic "+base64.b64encode(self.login+":"+self.password)
+        c.request(self.method, total_path, body, headers)
+        r = c.getresponse()
+        http_response = r.read()
+        try:
+            bearer_parameters = json.loads(http_response)
+        except ValueError as detail:
+            logger.error(  "Unexpected authentication response: \n" +
+                            str(detail) + "\nCannot use authentication")
+        self.bearer_parameters = bearer_parameters 
+        c.close()
+
+    def make_request(self, server, interaction, url_parameters):
+        if server.port==443:
+              c = httplib.HTTPSConnection(server.host, 
+                                          server.port,
+                                          timeout = 10 )
+              scheme = 'https'
+        else:
+              c = httplib.HTTPConnection( server.host, 
+                                          server.port,
+                                          timeout = 10 )
+              scheme = 'http'
+        total_path = "%s?%s" % (    interaction.request.url_root_path, 
+                                    urllib.urlencode(url_parameters) )
+        self.current_request_url = "%s://%s:%s%s" % \
+                    (scheme, "localhost", "1234", total_path)
+        logger.info("[In progress] Request: %s" % (self.current_request_url))
+        c.request(interaction.request.method, total_path, None,
+            {'Authorization': 'Bearer '+self.bearer_parameters["access_token"]})
+        response = c.getresponse()
+        content = response.read()
+        headers = dict((x,y) for x,y in response.getheaders())
+        headers.update({'status': response.status})
+        c.close()
+        return content, headers
+
 
 class AuthOauth2(Authentication):
     """ The class for services requiring oauth2 authentication """
