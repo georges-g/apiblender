@@ -222,7 +222,7 @@ class AuthAccessTokenAuthorization(Authentication):
         total_path = "%s?%s" % (    interaction.request.url_root_path, 
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s://%s:%s%s" % \
-                    (scheme, "localhost", "1234", total_path)
+                    (scheme, server.host, server.port, total_path)
         logger.info("[In progress] Request: %s" % (self.current_request_url))
         c.request(interaction.request.method, total_path, None,
             {'Authorization': 'Bearer '+self.bearer_parameters["access_token"]})
