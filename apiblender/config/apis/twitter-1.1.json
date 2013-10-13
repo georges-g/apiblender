@@ -34,7 +34,8 @@
                 "url_root_path": "/1.1/followers/ids.json",
                 "method": "GET",
                 "url_params": [ 
-                    [ "user_id", "int", false, null ],
+                    [ "screen_name", "int", true, null ],
+                    [ "user_id", "int", true, null ],
                     [ "cursor", "string", true, null ], 
                     [ "count", "int", true, 5000 ]
                 ]
