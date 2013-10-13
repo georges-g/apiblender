@@ -58,6 +58,23 @@
                 "expected_status": 200,
                 "serialization_format": "JSON"
             }
+        },
+        {
+            "name": "users_lookup",
+            "description": "return user information for a collection of users",
+            "request": {
+                "url_root_path": "/1.1/users/lookup.json",
+                "method": "GET",
+                "url_params": [ 
+                    [ "screen_name", "list", true, null ],
+                    [ "user_id", "list", true, null ], 
+                    [ "include_entities", "boolean", true, true ] 
+                ]
+            },
+            "response": {
+                "expected_status": 200,
+                "serialization_format": "JSON"
+            }
         }
     ]
 }
