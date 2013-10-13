@@ -12,11 +12,8 @@ apiblender/config/apis/facebook.json
 apiblender/config/apis/flickr.json
 apiblender/config/apis/google_plus.json
 apiblender/config/apis/twitter-1.1.json
-apiblender/config/apis/twitter-generic.json
-apiblender/config/apis/twitter-search.json
 apiblender/config/apis/youtube.json
 apiblender/config/apis/auth/flickr.json.example
 apiblender/config/apis/auth/google_plus.json.example
 apiblender/config/apis/auth/twitter-1.1.json.example
-apiblender/config/apis/auth/twitter-generic.json.example
 apiblender/config/apis/auth/youtube.json.example
