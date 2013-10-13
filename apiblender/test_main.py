@@ -17,9 +17,6 @@ configs_to_test = [
     ['facebook', 'user', 'ids', '7901103'],
     ['facebook', 'search', 'q', 'hollande'],
     ['flickr', 'photos_search', 'tags', 'hollande'],
-    ['twitter-generic', 'user_timeline', 'user_id', '73378083'],
-    ['twitter-generic', 'followers', 'screen_name', 'netiru'],
-    ['twitter-search', 'search', 'q', 'hollande'],
     ['twitter-1.1', 'search', 'q', 'hollande'],
     ['twitter-1.1', 'followers', 'user_id', '813286'], # Barack Obama
     ['twitter-1.1', 'lists', 'user_id', '813286'],     # Barack Obama
