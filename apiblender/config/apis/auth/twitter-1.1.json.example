@@ -2,8 +2,8 @@
     "type": "access_token_authorization",
     "path": "/oauth2/token",
     "method": "POST",
-    "login": "",
-    "password": "",
+    "login": "CONSUMER_KEY",
+    "password": "CONSUMER_SECRET",
     "parameters": {
       "grant_type": "client_credentials"
     }
