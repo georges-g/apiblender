@@ -1,6 +1,6 @@
 import logging
-
 import main
+import json
 
 # TODO: tests are very basic at the moment, move the project into more TDD
 # would be a good idea.
@@ -23,9 +23,9 @@ configs_to_test = [
     ['twitter-1.1', 'search', 'q', 'hollande'],
     ['twitter-1.1', 'followers', 'user_id', '813286'], # Barack Obama
     ['twitter-1.1', 'lists', 'user_id', '813286'],     # Barack Obama
+    ['twitter-1.1', 'users_lookup', 'screen_name', 'twitterapi,twitter'],
     ['youtube', 'search', 'q', 'hollande']
 ]
-
 
 for config in configs_to_test:
     blender.load_server(config[0])
@@ -36,4 +36,4 @@ for config in configs_to_test:
         print "%s, %s: %s" % (config[0], config[1], \
             (res['successful_interaction']))
     else: 
-        print "%s" % res
+        print json.dumps(res)
