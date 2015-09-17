@@ -201,10 +201,12 @@ class AuthAccessTokenAuthorization(Authentication):
         r = c.getresponse()
         http_response = r.read()
         try:
-            bearer_parameters = json.loads(http_response)
+          bearer_parameters = json.loads(http_response)
         except ValueError as detail:
-            logger.error(  "Unexpected authentication response: \n" +
-                            str(detail) + "\nCannot use authentication")
+          bearer_parameters = http_response.split("access_token=",1)[1]
+          if not bearer_parameters:
+            logger.error("Unexpected authentication response: \n" +
+                         http_response + "\nCannot use authentication")
         self.bearer_parameters = bearer_parameters 
         c.close()
 
