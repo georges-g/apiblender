@@ -10,13 +10,13 @@
 	},
 	"interactions": [
 		{
-			"name": "search",
-			"description": "search with a keyword",
+			"name": "graph",
+			"description": "Main Facebook Graph API endpoint",
 			"request": {
-				"url_root_path": "/search",
+				"url_root_path": "/v2.4/",
 				"method": "GET",
 				"url_params": [
-                    [ "q", "string", false, null ],
+                    [ "", "string", false, null ],
                     [ "limit", "integer", true, 100 ]
                 ]
 			},
@@ -24,21 +24,6 @@
 				"expected_status": 200,
 				"serialization_format": "JSON"
 			}
-		},
-        {
-			"name": "user",
-			"description": "get a user or a page from its username or id",
-			"request": {
-				"url_root_path": "/",
-				"method": "GET",
-				"url_params": [
-                    [ "ids", "string", false, null ]
-                ]
-			},
-			"response": {
-				"expected_status": 200,
-				"serialization_format": "JSON"
-			}
 		}
-	]
+        ]
 }

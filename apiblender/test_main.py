@@ -14,8 +14,8 @@ apiblender_logger.addHandler(apiblender_file_handler)
 
 configs_to_test = [
     ['google_plus', 'activities_search', 'query', 'hollande'],
-    ['facebook', 'user', 'ids', '7901103'],
-    ['facebook', 'search', 'q', 'hollande'],
+    ['facebook', 'graph', '', 'YvesRocherBeauty'],
+    ['facebook', 'graph', '', 'YvesRocherBeauty/feed'],
     ['flickr', 'photos_search', 'tags', 'hollande'],
     ['twitter-1.1', 'search', 'q', 'hollande'],
     ['twitter-1.1', 'followers', 'user_id', '813286'], # Barack Obama

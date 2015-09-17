@@ -85,7 +85,12 @@ class AuthNone(Authentication):
                                           server.port,
                                           timeout = 10 )
               scheme = 'http'
-        total_path = "%s?%s" % (    interaction.request.url_root_path, 
+        if(url_parameters['']):
+          path="%s%s" % (interaction.request.url_root_path,url_parameters[''])
+          del url_parameters['']
+        else:
+          path=interaction.request.url_root_path
+        total_path = "%s?%s" % (    path, 
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s://%s:%s%s" % \
                     (scheme, server.host, server.port, total_path)
@@ -221,7 +226,12 @@ class AuthAccessTokenAuthorization(Authentication):
                                           server.port,
                                           timeout = 10 )
               scheme = 'http'
-        total_path = "%s?%s" % (    interaction.request.url_root_path, 
+        if(url_parameters['']):
+          path="%s%s" % (interaction.request.url_root_path,url_parameters[''])
+          del url_parameters['']
+        else:
+          path=interaction.request.url_root_path
+        total_path = "%s?%s" % (    path, 
                                     urllib.urlencode(url_parameters) )
         self.current_request_url = "%s://%s:%s%s" % \
                     (scheme, server.host, server.port, total_path)
@@ -271,10 +281,15 @@ class AuthOauth2(Authentication):
         print "Authentication successful"
 
     def make_request(self, server, interaction, url_parameters):
+        if(url_parameters['']):
+          path="%s%s" % (interaction.request.url_root_path,url_parameters[''])
+          del url_parameters['']
+        else:
+          path=interaction.request.url_root_path
         url_parameters = urllib.urlencode(url_parameters)
         self.current_request_url = "https://%s:%s%s?%s" % \
             ( server.host, server.port,
-              interaction.request.url_root_path, url_parameters )
+              path, url_parameters )
         token = oauth.Token(    key=self.access_token['oauth_token'], 
                                 secret=self.access_token['oauth_token_secret'])
         consumer = oauth.Consumer(  key=self.consumer_key,
@@ -297,7 +312,7 @@ class AuthAPIKey(Authentication):
         if 'https' in auth_config.keys():
             self.https = auth_config["https"]
         else:
-            self.https = false
+            self.https = False
 
     def request_parameters(self, host, port):
         pass
@@ -314,7 +329,12 @@ class AuthAPIKey(Authentication):
                                         timeout = 10 )
             scheme='http'
         url_parameters.update(self.auth_url_parameters)
-        total_path = "%s?%s" % ( interaction.request.url_root_path, 
+        if(url_parameters['']):
+          path="%s%s" % (interaction.request.url_root_path,url_parameters[''])
+          del url_parameters['']
+        else:
+          path=interaction.request.url_root_path
+        total_path = "%s?%s" % ( path, 
                                  urllib.urlencode(url_parameters) )
         self.current_request_url = "%s://%s:%s%s" % \
                     (scheme, server.host, server.port, total_path)
