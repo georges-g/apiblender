@@ -1,0 +1,12 @@
+{
+  "type": "access_token_authorization",
+  "path": "/oauth/access_token",
+  "login": "",
+  "password": "",
+  "method": "GET",
+  "parameters": {
+    "grant_type": "client_credentials",
+    "client_id": "504037309771079",
+    "client_secret": "f423f6d1894b8469e1ab5243e659186a"
+  }
+} 
